@@ -701,6 +701,8 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             font-size: 0.85rem;
             color: #e2e8f0;
             overflow-x: auto;
+            overflow-y: auto;
+            max-height: 600px;
             white-space: pre-wrap;
             flex-grow: 1;
         }
@@ -923,7 +925,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 </div>
             </div>
             <div style="margin-top: 2rem; padding: 1rem; border: 1px dashed #64748b; border-radius: 8px;">
-                Task: Process <code>stats.csv</code> (flow_id, tx_frames, rx_frames) and compute loss percentage.
+                Task: Process <code>stats.csv</code> (Flow ID, Tx Frames, Rx Frames) and compute loss percentage.
             </div>
         </div>
 
@@ -936,11 +938,22 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                      <!-- Result (Hidden) -->
                     <div class="grid-item result-box fragment visible">
                         <span class="grid-title">The Code Result</span>
-                        <div class="code-block"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+                        <div class="code-block"><span class="keyword">import</span> csv
 
 <span class="comment"># Assumes perfect integers</span>
-df = pd.read_csv(<span class="string">'sales.csv'</span>)
-print(df[<span class="string">'Revenue'</span>].sum())</div>
+<span class="keyword">with</span> open(<span class="string">'stats.csv'</span>, 'r') as file:
+    reader = csv.DictReader(file)
+    
+    <span class="keyword">for</span> row in reader:
+        flow_id = row['Flow ID']
+        
+        <span class="keyword">if</span> flow_id in [<span class="string">'Flow 2'</span>, <span class="string">'Flow 3'</span>, <span class="string">'Flow 4'</span>]:
+            tx_frames = float(row[<span class="string">'Tx Frames'</span>])
+            rx_frames = float(row[<span class="string">'Rx Frames'</span>])
+            
+            loss = (rx_frames - tx_frames) / tx_frames * 100
+            
+            <span class="keyword">print</span>(f<span class="string">"{flow_id}: {loss:.2f}%"</span>)</div>
                     </div>
                 </div>
 
@@ -955,7 +968,10 @@ print(df[<span class="string">'Revenue'</span>].sum())</div>
                     <!-- Prompt -->
                     <div class="grid-item prompt-box">
                         <span class="grid-title">The Prompt</span>
-                        <div class="code-block">Write a python script to read a csv file called 'sales.csv' and calculate the total revenue.</div>
+                        <div class="code-block">Write a python script to read a csv file called 'stats.csv' calculate the total loss by looking at Tx Frames and Rx Frames.
+I want you to calculate loss as (rx - tx) / tx * 100 and print the result for all Flow 2, Flow3 and Flow 4.
+We will havve multiple columns but the relevant columns are Flow ID, Tx Frames, Rx Frames.
+Return only the python code without any explanation or comments.</div>
                     </div>
 
                     <!-- Reflection (Hidden) -->
@@ -964,7 +980,7 @@ print(df[<span class="string">'Revenue'</span>].sum())</div>
                         <p style="color: var(--danger);"><strong>Status: Fragile</strong></p>
                         <ul style="margin-top: 0.5rem; padding-left: 1.2rem; font-size: 0.9rem;">
                             <li>Benefit: Extremely fast generation.</li>
-                            <li>Flaw: Crashes immediately if 'Revenue' contains '$' or strings.</li>
+                            <li>Flaw: Crashes immediately if 'Tx Frames' or 'Rx Frames' contain non-numeric values.</li>
                             <li>Flaw: No file handling (File Not Found crash).</li>
                         </ul>
                     </div>
@@ -981,10 +997,29 @@ print(df[<span class="string">'Revenue'</span>].sum())</div>
                     <!-- Result (Hidden) -->
                     <div class="grid-item result-box fragment visible">
                         <span class="grid-title">The Code Result</span>
-                        <div class="code-block">df = pd.read_csv(<span class="string">'sales.csv'</span>)
-<span class="comment"># Cleaning logic added due to examples</span>
-df[<span class="string">'Revenue'</span>] = df[<span class="string">'Revenue'</span>].str.replace(<span class="string">'$'</span>,<span class="string">''</span>)
-df[<span class="string">'Revenue'</span>] = pd.to_numeric(df[<span class="string">'Revenue'</span>])</div>
+                        <div class="code-block">import csv
+
+with open('stats.csv', 'r') as file:
+    csv_reader = csv.DictReader(file)
+    
+    for row in csv_reader:
+        flow_id = row['Flow ID']
+        
+        if flow_id in ['Flow 2', 'Flow 3', 'Flow 4']:
+            tx_frames = row['Tx Frames']
+            rx_frames = row['Rx Frames']
+            
+            if rx_frames == 'N/A' or tx_frames == 'N/A':
+                print(f"{flow_id}: Loss = N/A (missing data)")
+            else:
+                tx = float(tx_frames)
+                rx = float(rx_frames)
+                
+                if tx == 0:
+                    print(f"{flow_id}: Loss = N/A (Tx Frames is 0)")
+                else:
+                    loss = (tx - rx) / tx * 100
+                    print(f"{flow_id}: Loss = {loss:.2f}%")</div>
                     </div>
                 </div>
 
@@ -999,15 +1034,22 @@ df[<span class="string">'Revenue'</span>] = pd.to_numeric(df[<span class="string
                     <!-- Prompt -->
                     <div class="grid-item prompt-box">
                         <span class="grid-title">The Prompt</span>
-                        <div class="code-block">I have a messy CSV.
-Example Input:
-2023-01-01, Widget, $1,000
-2023-01-02, Gadget, $50.00
+                        <div class="code-block">Write a python script to read a csv file called 'stats.csv' 
+Calculate the total loss by looking at Tx Frames and Rx Frames.
+I want you to calculate loss as (tx - rx) / tx * 100 and print the result for all Flow 2, Flow3 and Flow 4.
+We will havve multiple columns but the relevant columns are Flow ID, Tx Frames, Rx Frames.
 
-Example Output:
-Total: 1050.0
+Its a messy csv
+Here is how my csv looks like paritially:
+"Flow ID","Tx Frames","Rx Frames"
+"Flow 1",1000,1000,....
+"Flow 2",1000,"N/A",....
+.
+.
+.
+"Flow N",1000,200,....
 
-Write a script for 'sales.csv'.</div>
+Return only the python code without any explanation or comments.</div>
                     </div>
 
                      <!-- Reflection (Hidden) -->
@@ -1015,7 +1057,7 @@ Write a script for 'sales.csv'.</div>
                         <span class="grid-title">Reflection &amp; Analysis</span>
                         <p style="color: var(--warning);"><strong>Status: Format-Aware</strong></p>
                         <ul style="margin-top: 0.5rem; padding-left: 1.2rem; font-size: 0.9rem;">
-                            <li>Benefit: Handles dirty data (currency symbols).</li>
+                            <li>Benefit: Handles dirty data (e.g., "N/A" values).</li>
                             <li>Flaw: Still logically brittle. What if the file is empty? What if a row is missing?</li>
                             <li>Flaw: Logic is implied, not guaranteed.</li>
                         </ul>
@@ -1033,12 +1075,46 @@ Write a script for 'sales.csv'.</div>
                     <!-- Result (Hidden) -->
                     <div class="grid-item result-box fragment visible">
                         <span class="grid-title">The Code Result</span>
-                        <div class="code-block"><span class="keyword">try</span>:
-    <span class="keyword">if</span> not os.path.exists(path):
-        <span class="keyword">raise</span> FileNotFoundError
-    <span class="comment"># ... logic ...</span>
-<span class="keyword">except</span> Exception <span class="keyword">as</span> e:
-    print(f<span class="string">"Error: {e}"</span>)</div>
+                        <div class="code-block">import csv,os
+
+def calculate_loss(tx, rx):
+    try:
+        tx_val = float(tx)
+        rx_val = float(rx)
+        if tx_val == 0:
+            return None
+        loss = (tx_val - rx_val) / tx_val * 100
+        return loss
+    except (ValueError, TypeError):
+        return None
+        
+def main():
+    filename = 'stats.csv'
+    if not os.path.exists(filename):
+        print(f"Error: File '{filename}' not found.")
+        return
+    try:
+        with open(filename, 'r') as file:
+            csv_reader = csv.DictReader(file)
+            for row in csv_reader:
+                flow_id = row.get('Flow ID', '').strip()
+                if flow_id in ['Flow 2', 'Flow 3', 'Flow 4']:
+                    tx_frames = row.get('Tx Frames', '').strip()
+                    rx_frames = row.get('Rx Frames', '').strip()
+                    if tx_frames.upper() == 'N/A' or rx_frames.upper() == 'N/A':
+                        print(f"{flow_id}: Unable to calculate loss (N/A values)")
+                        continue
+                    loss = calculate_loss(tx_frames, rx_frames)
+                    if loss is not None:
+                        print(f"{flow_id}: Loss = {loss:.2f}%")
+                    else:
+                        print(f"{flow_id}: Unable to calculate loss (invalid data)")
+    except Exception as e:
+        print(f"Error reading file: {e}")
+
+if __name__ == "__main__":
+    main()
+                        </div>
                     </div>
                 </div>
 
@@ -1053,12 +1129,27 @@ Write a script for 'sales.csv'.</div>
                     <!-- Prompt -->
                     <div class="grid-item prompt-box">
                         <span class="grid-title">The Prompt</span>
-                        <div class="code-block">Write a script for 'sales.csv'.
-Before coding, think step-by-step:
+                        <div class="code-block">Write a python script to read a csv file called 'stats.csv' 
+Calculate the total loss by looking at Tx Frames and Rx Frames.
+I want you to calculate loss as (tx - rx) / tx * 100 and print the result for all Flow 2, Flow3 and Flow 4.
+We will havve multiple columns but the relevant columns are Flow ID, Tx Frames, Rx Frames.
+
+Its a messy csv
+Here is how my csv looks like paritially:
+"Flow ID","Tx Frames","Rx Frames"
+"Flow 1",1000,1000,....
+"Flow 2",1000,"N/A",....
+.
+.
+.
+"Flow N",1000,200,....
+
+Before coding, consider the following edge cases and handle them in your code:
 1. How do we handle missing files?
 2. How do we handle non-numeric rows?
 3. How do we safely convert types?
-Then generate code.</div>
+
+Return only the python code without any explanation or comments.</div>
                     </div>
 
                      <!-- Reflection (Hidden) -->
@@ -1084,12 +1175,160 @@ Then generate code.</div>
                     <!-- Result (Hidden) -->
                     <div class="grid-item result-box fragment visible">
                         <span class="grid-title">The Code Result</span>
-                        <div class="code-block"><span class="keyword">def</span> <span class="func">process_data</span>(path: str) -&gt; float:
-    logging.info(<span class="string">"Starting..."</span>)
+                        <div class="code-block">import argparse
+import csv
+import logging
+import sys
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
 
-<span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:
-    parser = argparse.ArgumentParser()
-    args = parser.parse_args()</div>
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+
+def parse_arguments() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description='Calculate packet loss from stats.csv'
+    )
+    parser.add_argument(
+        '--file',
+        type=str,
+        default='stats.csv',
+        help='Path to the CSV file (default: stats.csv)'
+    )
+    parser.add_argument(
+        '--flows',
+        type=str,
+        nargs='+',
+        default=['Flow 2', 'Flow 3', 'Flow 4'],
+        help='Flow IDs to analyze (default: Flow 2, Flow 3, Flow 4)'
+    )
+    return parser.parse_args()
+
+
+def validate_file(file_path: str) -> bool:
+    path = Path(file_path)
+    if not path.exists():
+        logger.error(f'File not found: {file_path}')
+        return False
+    if not path.is_file():
+        logger.error(f'Path is not a file: {file_path}')
+        return False
+    return True
+
+
+def safe_convert_to_number(value: str) -> Optional[float]:
+    if not value or value.strip() == '':
+        return None
+    
+    cleaned_value = value.strip().strip('"').strip("'")
+    
+    if cleaned_value.upper() in ['N/A', 'NA', 'NULL', 'NONE', '-']:
+        return None
+    
+    try:
+        return float(cleaned_value)
+    except (ValueError, AttributeError):
+        return None
+
+
+def read_csv_data(file_path: str) -> List[Dict[str, str]]:
+    data = []
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            csv_reader = csv.DictReader(file)
+            for row in csv_reader:
+                data.append(row)
+        logger.info(f'Successfully read {len(data)} rows from {file_path}')
+        return data
+    except Exception as e:
+        logger.error(f'Error reading CSV file: {e}')
+        sys.exit(1)
+
+
+def calculate_loss(tx: float, rx: float) -> float:
+    if tx == 0:
+        return 0.0
+    return ((tx - rx) / tx) * 100
+
+
+def process_flow_data(
+    data: List[Dict[str, str]], 
+    target_flows: List[str]
+) -> Dict[str, Tuple[Optional[float], Optional[float], Optional[float]]]:
+    results = {}
+    
+    for row in data:
+        flow_id = row.get('Flow ID', '').strip().strip('"').strip("'")
+        
+        if flow_id not in target_flows:
+            continue
+        
+        tx_frames_str = row.get('Tx Frames', '')
+        rx_frames_str = row.get('Rx Frames', '')
+        
+        tx_frames = safe_convert_to_number(tx_frames_str)
+        rx_frames = safe_convert_to_number(rx_frames_str)
+        
+        if tx_frames is None:
+            logger.warning(f'{flow_id}: Tx Frames is not a valid number ({tx_frames_str})')
+            results[flow_id] = (None, None, None)
+            continue
+        
+        if rx_frames is None:
+            logger.warning(f'{flow_id}: Rx Frames is not a valid number ({rx_frames_str})')
+            results[flow_id] = (tx_frames, None, None)
+            continue
+        
+        loss_percentage = calculate_loss(tx_frames, rx_frames)
+        results[flow_id] = (tx_frames, rx_frames, loss_percentage)
+    
+    return results
+
+
+def log_results(results: Dict[str, Tuple[Optional[float], Optional[float], Optional[float]]]) -> None:
+    logger.info('=' * 60)
+    logger.info('Packet Loss Results')
+    logger.info('=' * 60)
+    
+    for flow_id, (tx, rx, loss) in results.items():
+        if tx is None:
+            logger.info(f'{flow_id}: Unable to calculate (invalid Tx Frames)')
+        elif rx is None:
+            logger.info(f'{flow_id}: Unable to calculate (invalid Rx Frames)')
+        else:
+            logger.info(f'{flow_id}: Tx={tx:.0f}, Rx={rx:.0f}, Loss={loss:.2f}%')
+    
+    logger.info('=' * 60)
+
+
+def main() -> None:
+    args = parse_arguments()
+    
+    if not validate_file(args.file):
+        sys.exit(1)
+    
+    data = read_csv_data(args.file)
+    
+    if not data:
+        logger.error('No data found in CSV file')
+        sys.exit(1)
+    
+    results = process_flow_data(data, args.flows)
+    
+    if not results:
+        logger.warning(f'No matching flows found for: {args.flows}')
+        sys.exit(0)
+    
+    log_results(results)
+
+
+if __name__ == '__main__':
+    main()
+</div>
                     </div>
                 </div>
 
@@ -1104,12 +1343,34 @@ Then generate code.</div>
                     <!-- Prompt -->
                     <div class="grid-item prompt-box">
                         <span class="grid-title">The Prompt</span>
-                        <div class="code-block">Act as a Senior Engineer.
+                        <div class="code-block">Write a python script to read a csv file called 'stats.csv' 
+Calculate the total loss by looking at Tx Frames and Rx Frames.
+I want you to calculate loss as (tx - rx) / tx * 100 and print the result for all Flow 2, Flow3 and Flow 4.
+We will havve multiple columns but the relevant columns are Flow ID, Tx Frames, Rx Frames.
+
+Its a messy csv
+Here is how my csv looks like paritially:
+"Flow ID","Tx Frames","Rx Frames"
+"Flow 1",1000,1000,....
+"Flow 2",1000,"N/A",....
+.
+.
+.
+"Flow N",1000,200,....
+
+Before coding, consider the following edge cases and handle them in your code:
+1. How do we handle missing files?
+2. How do we handle non-numeric rows?
+3. How do we safely convert types?
+
+Act as a Senior Engineer.
 Constraints:
 1. Use `argparse` for CLI usage.
 2. Use Type Hinting (PEP 484).
 3. Use `logging` instead of print.
-4. Modular functions.</div>
+4. Modular functions.
+
+Return only the python code without any explanation or comments.</div>
                     </div>
 
                     <!-- Reflection (Hidden) -->
