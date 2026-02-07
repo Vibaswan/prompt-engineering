@@ -970,7 +970,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                         <span class="grid-title">The Prompt</span>
                         <div class="code-block">Write a python script to read a csv file called 'stats.csv' calculate the total loss by looking at Tx Frames and Rx Frames.
 I want you to calculate loss as (rx - tx) / tx * 100 and print the result for all Flow 2, Flow3 and Flow 4.
-We will havve multiple columns but the relevant columns are Flow ID, Tx Frames, Rx Frames.
+We will have multiple columns but the relevant columns are Flow ID, Tx Frames, Rx Frames.
 Return only the python code without any explanation or comments.</div>
                     </div>
 
@@ -1037,10 +1037,10 @@ with open('stats.csv', 'r') as file:
                         <div class="code-block">Write a python script to read a csv file called 'stats.csv' 
 Calculate the total loss by looking at Tx Frames and Rx Frames.
 I want you to calculate loss as (tx - rx) / tx * 100 and print the result for all Flow 2, Flow3 and Flow 4.
-We will havve multiple columns but the relevant columns are Flow ID, Tx Frames, Rx Frames.
+We will have multiple columns but the relevant columns are Flow ID, Tx Frames, Rx Frames.
 
 Its a messy csv
-Here is how my csv looks like paritially:
+Here is how my csv looks like partially:
 "Flow ID","Tx Frames","Rx Frames"
 "Flow 1",1000,1000,....
 "Flow 2",1000,"N/A",....
@@ -1132,10 +1132,10 @@ if __name__ == "__main__":
                         <div class="code-block">Write a python script to read a csv file called 'stats.csv' 
 Calculate the total loss by looking at Tx Frames and Rx Frames.
 I want you to calculate loss as (tx - rx) / tx * 100 and print the result for all Flow 2, Flow3 and Flow 4.
-We will havve multiple columns but the relevant columns are Flow ID, Tx Frames, Rx Frames.
+We will have multiple columns but the relevant columns are Flow ID, Tx Frames, Rx Frames.
 
 Its a messy csv
-Here is how my csv looks like paritially:
+Here is how my csv looks like partially:
 "Flow ID","Tx Frames","Rx Frames"
 "Flow 1",1000,1000,....
 "Flow 2",1000,"N/A",....
@@ -1346,10 +1346,10 @@ if __name__ == '__main__':
                         <div class="code-block">Write a python script to read a csv file called 'stats.csv' 
 Calculate the total loss by looking at Tx Frames and Rx Frames.
 I want you to calculate loss as (tx - rx) / tx * 100 and print the result for all Flow 2, Flow3 and Flow 4.
-We will havve multiple columns but the relevant columns are Flow ID, Tx Frames, Rx Frames.
+We will have multiple columns but the relevant columns are Flow ID, Tx Frames, Rx Frames.
 
 Its a messy csv
-Here is how my csv looks like paritially:
+Here is how my csv looks like partially:
 "Flow ID","Tx Frames","Rx Frames"
 "Flow 1",1000,1000,....
 "Flow 2",1000,"N/A",....
@@ -1396,11 +1396,161 @@ Return only the python code without any explanation or comments.</div>
                      <!-- Result (Hidden) -->
                     <div class="grid-item result-box fragment visible">
                         <span class="grid-title">The Code Result</span>
-                        <div class="code-block"><span class="comment"># Model switches from load_all to chunks</span>
-chunk_size = 1000
-total = 0
-<span class="keyword">for</span> chunk <span class="keyword">in</span> pd.read_csv(file, chunksize=chunk_size):
-    total += chunk[<span class="string">'Revenue'</span>].sum()</div>
+                        <div class="code-block">import argparse
+import csv
+import logging
+from typing import Optional, Iterator, Dict
+from pathlib import Path
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+
+def parse_arguments() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description='Calculate packet loss from stats.csv'
+    )
+    parser.add_argument(
+        '--file',
+        type=str,
+        default='stats.csv',
+        help='Path to the CSV file (default: stats.csv)'
+    )
+    parser.add_argument(
+        '--flows',
+        nargs='+',
+        default=['Flow 2', 'Flow 3', 'Flow 4'],
+        help='Flow IDs to analyze (default: Flow 2, Flow 3, Flow 4)'
+    )
+    return parser.parse_args()
+
+
+def validate_file(file_path: str) -> bool:
+    path = Path(file_path)
+    if not path.exists():
+        logger.error(f"File not found: {file_path}")
+        return False
+    if not path.is_file():
+        logger.error(f"Path is not a file: {file_path}")
+        return False
+    return True
+
+
+def safe_convert_to_int(value: str) -> Optional[int]:
+    if not value:
+        return None
+    
+    value = value.strip().strip('"').strip("'")
+    
+    if value.upper() in ('N/A', 'NA', 'NULL', 'NONE', '', '-'):
+        return None
+    
+    try:
+        return int(float(value))
+    except (ValueError, TypeError):
+        return None
+
+
+def calculate_loss(tx_frames: Optional[int], rx_frames: Optional[int]) -> Optional[float]:
+    if tx_frames is None or rx_frames is None:
+        return None
+    
+    if tx_frames == 0:
+        return None
+    
+    loss = ((tx_frames - rx_frames) / tx_frames) * 100
+    return loss
+
+
+def read_csv_rows(file_path: str) -> Iterator[Dict[str, str]]:
+    try:
+        with open(file_path, 'r', encoding='utf-8', newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                yield row
+    except Exception as e:
+        logger.error(f"Error reading CSV file: {e}")
+        raise
+
+
+def process_flow_data(file_path: str, target_flows: list) -> Dict[str, Optional[float]]:
+    results: Dict[str, Optional[float]] = {}
+    target_flows_set = set(target_flows)
+    
+    try:
+        for row in read_csv_rows(file_path):
+            flow_id = row.get('Flow ID', '').strip().strip('"').strip("'")
+            
+            if flow_id not in target_flows_set:
+                continue
+            
+            tx_frames_str = row.get('Tx Frames', '')
+            rx_frames_str = row.get('Rx Frames', '')
+            
+            tx_frames = safe_convert_to_int(tx_frames_str)
+            rx_frames = safe_convert_to_int(rx_frames_str)
+            
+            loss = calculate_loss(tx_frames, rx_frames)
+            
+            results[flow_id] = loss
+            
+            if loss is not None:
+                logger.info(
+                    f"{flow_id}: Tx={tx_frames}, Rx={rx_frames}, Loss={loss:.2f}%"
+                )
+            else:
+                logger.warning(
+                    f"{flow_id}: Unable to calculate loss (Tx={tx_frames_str}, Rx={rx_frames_str})"
+                )
+    
+    except Exception as e:
+        logger.error(f"Error processing flow data: {e}")
+        raise
+    
+    return results
+
+
+def report_results(results: Dict[str, Optional[float]], target_flows: list) -> None:
+    logger.info("=" * 60)
+    logger.info("LOSS CALCULATION RESULTS")
+    logger.info("=" * 60)
+    
+    for flow in target_flows:
+        if flow in results:
+            loss = results[flow]
+            if loss is not None:
+                logger.info(f"{flow}: {loss:.2f}% loss")
+            else:
+                logger.info(f"{flow}: Unable to calculate loss (invalid data)")
+        else:
+            logger.warning(f"{flow}: Not found in CSV file")
+    
+    logger.info("=" * 60)
+
+
+def main() -> None:
+    args = parse_arguments()
+    
+    if not validate_file(args.file):
+        logger.error("File validation failed. Exiting.")
+        return
+    
+    logger.info(f"Processing file: {args.file}")
+    logger.info(f"Target flows: {args.flows}")
+    
+    try:
+        results = process_flow_data(args.file, args.flows)
+        report_results(results, args.flows)
+    except Exception as e:
+        logger.error(f"Fatal error during processing: {e}")
+
+
+if __name__ == '__main__':
+    main()
+</div>
                     </div>
                 </div>
 
@@ -1415,10 +1565,37 @@ total = 0
                     <!-- Prompt -->
                     <div class="grid-item prompt-box">
                         <span class="grid-title">The Prompt</span>
-                        <div class="code-block">Write the script.
-Reflection Step:
+                        <div class="code-block">Write a python script to read a csv file called 'stats.csv' 
+Calculate the total loss by looking at Tx Frames and Rx Frames.
+I want you to calculate loss as (tx - rx) / tx * 100 and print the result for all Flow 2, Flow3 and Flow 4.
+We will have multiple columns but the relevant columns are Flow ID, Tx Frames, Rx Frames.
+
+Its a messy csv
+Here is how my csv looks like partially:
+"Flow ID","Tx Frames","Rx Frames"
+"Flow 1",1000,1000,....
+"Flow 2",1000,"N/A",....
+.
+.
+.
+"Flow N",1000,200,....
+
+Before coding, consider the following edge cases and handle them in your code:
+1. How do we handle missing files?
+2. How do we handle non-numeric rows?
+3. How do we safely convert types?
+
+Act as a Senior Engineer.
+Constraints:
+1. Use `argparse` for CLI usage.
+2. Use Type Hinting (PEP 484).
+3. Use `logging` instead of print.
+4. Modular functions.
+
 Critique your initial plan for **Memory Safety** assuming a 50GB file size.
-Correction: Rewrite logic to be memory efficient.</div>
+Correction: Rewrite logic to be memory efficient
+
+Return only the python code without any explanation or comments.</div>
                     </div>
 
                      <!-- Reflection (Hidden) -->
@@ -1444,12 +1621,103 @@ Correction: Rewrite logic to be memory efficient.</div>
                     <!-- Result (Hidden) -->
                     <div class="grid-item result-box fragment visible">
                         <span class="grid-title">The Code Result</span>
-                        <div class="code-block"><span class="comment"># Winner: Standard CSV Library</span>
-<span class="comment"># Reason: Zero dependencies, low memory footprint</span>
-<span class="keyword">import</span> csv
-<span class="keyword">with</span> open(<span class="string">'sales.csv'</span>) <span class="keyword">as</span> f:
-    reader = csv.reader(f)
-    <span class="comment"># ... implementation ...</span></div>
+                        <div class="code-block"># Step 1: Brainstorming 3 Approaches
+## Approach 1: CSV Library (Standard Library)
+- Uses Python's built-in csv module
+- Streams data row-by-row using DictReader
+- No external dependencies
+- Memory footprint: ~8KB buffer per file handle
+
+## Approach 2: Pandas
+- Feature-rich data manipulation library
+- Can use chunking with `read_csv(chunksize=...)`
+- Rich API for data operations
+- Memory footprint: Loads entire chunk into DataFrame (typically 10,000+ rows), plus overhead for Series objects, index structures
+
+## Approach 3: Polars
+- Modern data processing library written in Rust
+- Lazy evaluation with query optimization
+- Can stream with `scan_csv()` and lazy operations
+- Memory footprint: More efficient than Pandas but requires compilation and larger binary size
+
+# Step 2: Pros/Cons Evaluation for Low Memory Microservice
+
+## CSV Library (Standard Library)
+**Pros:**
+- Minimal memory usage - only one row in memory at a time (~1-2 KB per row)
+- No external dependencies - smaller container/deployment size
+- Fast startup time - no heavy library imports
+- Predictable memory consumption
+- Simple and transparent control flow
+
+**Cons:**
+- Manual parsing logic required
+- No built-in data type inference
+- Limited built-in data transformation capabilities
+- Less convenient for complex operations
+
+## Pandas
+**Pros:**
+- Rich ecosystem and extensive documentation
+- Powerful data manipulation APIs
+- Good for complex transformations
+
+**Cons:**
+- High memory overhead (3-5x the data size minimum)
+- Even with chunking, each chunk loads fully into memory
+- DataFrame objects have significant overhead (index, column objects, etc.)
+- Slow import time (~200-500ms)
+- For 50GB file, even 1000-row chunks would be problematic at scale
+- Not ideal for microservices due to large library size (~100MB+)
+
+## Polars
+**Pros:**
+- Better memory efficiency than Pandas (2-3x)
+- Lazy evaluation can optimize query plans
+- Fast execution with multi-threading
+- Modern API design
+
+**Cons:**
+- Still requires loading chunks into memory
+- External dependency with large binary size (~20-30MB)
+- Adds complexity for simple row-by-row operations
+- Less mature ecosystem than Pandas
+- Overkill for simple parsing tasks
+
+# Step 3: Winner - CSV Library (Standard Library)
+
+**Decision: Keep the CSV Library approach**
+
+## Rationale:
+
+For a microservice with low memory constraints processing 50GB files, the CSV library is the clear winner because:
+
+1. **Memory Efficiency**: Your current code already uses streaming with DictReader, which maintains O(1) memory complexity - only one row is loaded at a time. This is optimal for large files.
+
+2. **Microservice-Friendly**: No external dependencies means:
+   - Smaller Docker image size (important for microservices)
+   - Faster cold starts
+   - Reduced attack surface
+   - No dependency management overhead
+
+3. **Predictable Performance**: With row-by-row processing, memory usage remains constant regardless of file size. A 50GB file uses the same memory as a 50MB file.
+
+4. **Your Use Case**: You're only tracking 3 specific flows and calculating simple loss percentages. This doesn't require the heavy machinery of Pandas or Polars.
+
+## Minor Optimizations to Apply:
+
+1. **Increase buffer size** for the file handle to reduce I/O syscalls
+2. **Remove unnecessary string operations** in the hot path
+3. **Use string interning** for Flow ID comparisons (already using upper case consistently)
+4. **Early exit** once all three flows are found (optional optimization)
+
+## Trade-offs Accepted:
+
+- **Less convenience**: We write manual parsing logic, but for this simple use case, it's trivial
+- **No fancy operations**: We can't leverage vectorized operations, but we don't need them
+- **Manual type handling**: We handle type conversion ourselves, but this gives us precise control over error handling
+
+The current code is already well-optimized for memory efficiency. The changes below add minor performance improvements while maintaining the streaming, low-memory architecture.</div>
                     </div>
                 </div>
 
@@ -1464,9 +1732,19 @@ Correction: Rewrite logic to be memory efficient.</div>
                     <!-- Prompt -->
                     <div class="grid-item prompt-box">
                         <span class="grid-title">The Prompt</span>
-                        <div class="code-block">Step 1: Brainstorm 3 approaches (Pandas vs CSV Lib vs Polars).
+                        <div class="code-block">"""For my use-case of parsing a csv file which can go upto 50GB in size,
+you provided me a well structured code earlier. Now I want you to review the code for memory efficiency.
+
+Step 1: Brainstorm 3 approaches (Pandas vs CSV Lib vs Polars).
 Step 2: Evaluate Pros/Cons for a **microservice with low memory**.
-Step 3: Pick the winner and code it.</div>
+Step 3: Pick the winner and change the code accordingly.
+
+Here is the code:
+{code_content}
+
+explain why you chose the approach and tradeoffs with other approaches.
+when explaining the approach do not use ``python ... ``` block. it should be plain text.
+Then return the final python code within ```python ... ``` block. it should appear only once. </div>
                     </div>
 
                     <!-- Reflection (Hidden) -->
@@ -1491,13 +1769,272 @@ Step 3: Pick the winner and code it.</div>
                      <!-- Result (Hidden) -->
                     <div class="grid-item result-box fragment visible">
                         <span class="grid-title">The Code Result</span>
-                        <div class="code-block"><span class="keyword">class</span> <span class="func">DataSource</span>(ABC):
-    <span class="keyword">abstractmethod</span>
-    <span class="keyword">def</span> <span class="func">read</span>(self): <span class="keyword">pass</span>
+                        <div class="code-block">import pytest
+import csv
+import tempfile
+import os
+from pathlib import Path
+from unittest.mock import patch, MagicMock
+import logging
 
-<span class="keyword">class</span> <span class="func">CSVSource</span>(DataSource):
-    <span class="keyword">def</span> <span class="func">read</span>(self) -&gt; List[SalesRecord]:
-        <span class="comment"># ... impl ...</span></div>
+# Import functions from the main script
+from traffic_loss_calculator5 import (
+    validate_file,
+    safe_convert_to_float,
+    calculate_loss,
+    process_csv_row,
+    read_csv_streaming,
+    process_file
+)
+
+
+class TestValidateFile:
+    """Test suite for file validation"""
+    
+    def test_validate_file_exists(self):
+        """Test validation with a valid file"""
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv') as tmp:
+            tmp.write("test")
+            tmp_path = tmp.name
+        
+        try:
+            assert validate_file(tmp_path) is True
+        finally:
+            os.unlink(tmp_path)
+    
+    def test_validate_file_not_exists(self):
+        """Test validation with non-existent file"""
+        assert validate_file('/nonexistent/path/file.csv') is False
+    
+    def test_validate_empty_file(self):
+        """Test validation with empty file"""
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv') as tmp:
+            tmp_path = tmp.name
+        
+        try:
+            assert validate_file(tmp_path) is False
+        finally:
+            os.unlink(tmp_path)
+
+
+class TestSafeConvertToFloat:
+    """Test suite for safe float conversion"""
+    
+    def test_valid_number(self):
+        """Test converting valid number strings"""
+        assert safe_convert_to_float("123.45") == 123.45
+        assert safe_convert_to_float("100") == 100.0
+        assert safe_convert_to_float("0") == 0.0
+    
+    def test_invalid_values(self):
+        """Test converting invalid values"""
+        assert safe_convert_to_float("N/A") is None
+        assert safe_convert_to_float("") is None
+        assert safe_convert_to_float("NULL") is None
+        assert safe_convert_to_float("invalid") is None
+    
+    def test_whitespace_handling(self):
+        """Test handling of whitespace"""
+        assert safe_convert_to_float("  100.5  ") == 100.5
+
+
+class TestCalculateLoss:
+    """Test suite for loss calculation"""
+    
+    def test_normal_loss(self):
+        """Test normal packet loss calculation"""
+        assert calculate_loss(100, 90) == 10.0
+        assert calculate_loss(1000, 950) == 5.0
+    
+    def test_zero_tx(self):
+        """Test with zero transmitted packets"""
+        assert calculate_loss(0, 0) == 0.0
+    
+    def test_complete_loss(self):
+        """Test complete packet loss"""
+        assert calculate_loss(100, 0) == 100.0
+    
+    def test_no_loss(self):
+        """Test no packet loss"""
+        assert calculate_loss(100, 100) == 0.0
+
+
+class TestProcessCSVRow:
+    """Test suite for CSV row processing"""
+    
+    def test_valid_flow_2(self):
+        """Test processing valid FLOW 2 data"""
+        row = {
+            'Flow ID': 'FLOW 2',
+            'Tx Frames': '1000',
+            'Rx Frames': '950'
+        }
+        result = process_csv_row(row)
+        assert result is not None
+        assert result[0] == 'FLOW 2'
+        assert result[1] == 5.0
+    
+    def test_valid_flow_3(self):
+        """Test processing valid FLOW 3 data"""
+        row = {
+            'Flow ID': 'FLOW 3',
+            'Tx Frames': '2000',
+            'Rx Frames': '1800'
+        }
+        result = process_csv_row(row)
+        assert result is not None
+        assert result[0] == 'FLOW 3'
+        assert result[1] == 10.0
+    
+    def test_invalid_flow(self):
+        """Test processing invalid flow ID"""
+        row = {
+            'Flow ID': 'FLOW 1',
+            'Tx Frames': '1000',
+            'Rx Frames': '950'
+        }
+        result = process_csv_row(row)
+        assert result is None
+    
+    def test_missing_rx_frames(self):
+        """Test processing row with missing Rx Frames"""
+        row = {
+            'Flow ID': 'FLOW 2',
+            'Tx Frames': '1000',
+            'Rx Frames': 'N/A'
+        }
+        result = process_csv_row(row)
+        assert result is not None
+        assert result[0] == 'FLOW 2'
+        assert result[1] == 100.0  # Treated as 0, so 100% loss
+    
+    def test_invalid_tx_frames(self):
+        """Test processing row with invalid Tx Frames"""
+        row = {
+            'Flow ID': 'FLOW 2',
+            'Tx Frames': 'invalid',
+            'Rx Frames': '950'
+        }
+        result = process_csv_row(row)
+        assert result is None
+
+
+class TestReadCSVStreaming:
+    """Test suite for CSV streaming reader"""
+    
+    def test_valid_csv(self):
+        """Test reading valid CSV file"""
+        csv_content = """Flow ID,Tx Frames,Rx Frames
+FLOW 2,1000,950
+FLOW 3,2000,1900"""
+        
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv', newline='') as tmp:
+            tmp.write(csv_content)
+            tmp_path = tmp.name
+        
+        try:
+            rows = list(read_csv_streaming(tmp_path))
+            assert len(rows) == 2
+            assert rows[0]['Flow ID'] == 'FLOW 2'
+            assert rows[1]['Flow ID'] == 'FLOW 3'
+        finally:
+            os.unlink(tmp_path)
+    
+    def test_missing_columns(self):
+        """Test reading CSV with missing required columns"""
+        csv_content = """Flow ID,Tx Frames
+FLOW 2,1000"""
+        
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv', newline='') as tmp:
+            tmp.write(csv_content)
+            tmp_path = tmp.name
+        
+        try:
+            rows = list(read_csv_streaming(tmp_path))
+            assert len(rows) == 0
+        finally:
+            os.unlink(tmp_path)
+
+
+class TestProcessFileIntegration:
+    """Integration tests for complete file processing"""
+    
+    def test_process_complete_csv(self, caplog):
+        """Test processing a complete valid CSV file"""
+        csv_content = """Flow ID,Tx Frames,Rx Frames
+FLOW 1,1000,950
+FLOW 2,2000,1800
+FLOW 3,1500,1500
+FLOW 4,3000,2700"""
+        
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv', newline='') as tmp:
+            tmp.write(csv_content)
+            tmp_path = tmp.name
+        
+        try:
+            with caplog.at_level(logging.INFO):
+                process_file(tmp_path)
+            
+            # Check that all relevant flows were processed
+            log_text = caplog.text
+            assert "FLOW 2: Loss = 10.00%" in log_text
+            assert "FLOW 3: Loss = 0.00%" in log_text
+            assert "FLOW 4: Loss = 10.00%" in log_text
+        finally:
+            os.unlink(tmp_path)
+    
+    def test_process_csv_with_missing_data(self, caplog):
+        """Test processing CSV with some missing data"""
+        csv_content = """Flow ID,Tx Frames,Rx Frames
+FLOW 2,1000,N/A
+FLOW 3,2000,1800
+FLOW 4,invalid,500"""
+        
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv', newline='') as tmp:
+            tmp.write(csv_content)
+            tmp_path = tmp.name
+        
+        try:
+            with caplog.at_level(logging.INFO):
+                process_file(tmp_path)
+            
+            log_text = caplog.text
+            assert "FLOW 2: Loss = 100.00%" in log_text
+            assert "FLOW 3: Loss = 10.00%" in log_text
+            assert "FLOW 4: No data found" in log_text
+        finally:
+            os.unlink(tmp_path)
+    
+    def test_process_csv_with_no_relevant_flows(self, caplog):
+        """Test processing CSV with no relevant flows"""
+        csv_content = """Flow ID,Tx Frames,Rx Frames
+FLOW 1,1000,950
+FLOW 5,2000,1800"""
+        
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv', newline='') as tmp:
+            tmp.write(csv_content)
+            tmp_path = tmp.name
+        
+        try:
+            with caplog.at_level(logging.INFO):
+                process_file(tmp_path)
+            
+            log_text = caplog.text
+            assert "Relevant flows found: 0" in log_text
+        finally:
+            os.unlink(tmp_path)
+    
+    def test_process_nonexistent_file(self, caplog):
+        """Test processing non-existent file"""
+        with caplog.at_level(logging.ERROR):
+            process_file('/nonexistent/file.csv')
+        
+        assert "File not found" in caplog.text
+
+
+if __name__ == '__main__':
+    pytest.main([__file__, '-v'])
+</div>
                     </div>
                 </div>
 
@@ -1512,10 +2049,20 @@ Step 3: Pick the winner and code it.</div>
                     <!-- Prompt -->
                     <div class="grid-item prompt-box">
                         <span class="grid-title">The Prompt</span>
-                        <div class="code-block">1. Define a `SalesRecord` Dataclass (Schema).
-2. Define a `DataSource` Abstract Base Class.
-3. Implement `CSVSource` inheriting from `DataSource`.
-Combine all into a system.</div>
+                        <div class="code-block">We have created a python script to read a csv file called 'stats.csv'
+The code is saved with filename 'traffic_loss_calculator5.py'.
+and we can execute it as: python traffic_loss_calculator5.py --file stats.csv 
+Here is the code:
+{code_content}
+
+I want to generate unit tests for this code using simple python functions and pytest framework.
+Lets let break down the task which needs to be done.
+1. Analyze the code and identify key areas we can test
+2  Create test cases where you will creating mock data to simulate different scenarios and call the python code.
+4. please ensure if you are creating mock data files, you clean them up after the test is done.
+3. Finally combine all the test -cases maybe 3or 4 in number in a single python file.
+
+Return only the python code within ```python ... ``` block.</div>
                     </div>
 
                      <!-- Reflection (Hidden) -->
@@ -1540,7 +2087,76 @@ Combine all into a system.</div>
                     <!-- Result (Hidden) -->
                     <div class="grid-item result-box fragment visible" style="border-color: #c084fc;">
                         <span class="grid-title">AI Generated Prompt (The Output)</span>
-                        <div class="code-block" style="color: #c084fc;">"Act as a Principal Backend Dev. Design a concurrent pipeline using `multiprocessing`. Ensure strict type checking, unit tests coverage &gt; 90%, and streaming I/O..."</div>
+                        <div class="code-block" style="color: #c084fc;"># Prompt for CSV Processing Script
+
+```
+You are a senior Python engineer tasked with creating a production-grade CSV file reader for 'stats.csv'.
+
+## Requirements:
+
+### Core Functionality:
+- Read and process 'stats.csv' in a memory-efficient manner
+- Handle files of any size without loading entire dataset into memory
+- Process data in chunks/streams where appropriate
+
+### Code Quality Standards:
+- Write modular, maintainable code following SOLID principles
+- Use appropriate design patterns
+- Include proper type hints (Python 3.8+)
+- Follow PEP 8 style guidelines
+- Write self-documenting code with clear variable/function names
+
+### Edge Cases to Handle:
+- File does not exist
+- File is empty
+- File has no data rows (only headers)
+- Malformed CSV (inconsistent column counts)
+- Missing or extra delimiters
+- Special characters and encoding issues (UTF-8, UTF-16, etc.)
+- Very large files (GB+ size)
+- Empty cells/NULL values
+- Headers with special characters or spaces
+- Quote-enclosed fields with commas
+- Different line endings (Windows/Unix/Mac)
+
+### Required Components:
+1. **Main reader class/function** with configuration options
+2. **Error handling module** with custom exceptions
+3. **Validation logic** for data integrity
+4. **Logging mechanism** for debugging and monitoring
+5. **Unit tests** covering happy path and edge cases
+6. **Documentation**: docstrings and README with usage examples
+
+### Additional Considerations:
+- Use context managers for file handling
+- Implement retry logic for transient failures if needed
+- Consider using generators for memory efficiency
+- Add performance benchmarking capabilities
+- Make it easily extensible for future enhancements
+
+Provide a complete, production-ready solution with all necessary files and clear instructions for usage.
+```
+
+---
+
+**Alternative Shorter Version:**
+
+```
+Create a production-grade Python script to read 'stats.csv' with the following requirements:
+
+**Code Quality**: Senior engineer level - modular architecture, type hints, SOLID principles, comprehensive documentation
+
+**Performance**: Memory-efficient for large files using streaming/chunking
+
+**Robustness**: Handle all edge cases including:
+- Missing/corrupted files
+- Encoding issues
+- Malformed CSV data
+- Empty/NULL values
+- Large file sizes
+
+Include: proper error handling, logging, input validation, unit tests, and usage documentation.
+```</div>
                     </div>
                 </div>
 
@@ -1555,9 +2171,10 @@ Combine all into a system.</div>
                     <!-- Prompt -->
                     <div class="grid-item prompt-box">
                         <span class="grid-title">Your Input</span>
-                        <div class="code-block">You are an expert Prompt Engineer.
-I need a prompt to generate a secure, high-performance Python script for TBs of data.
-Output ONLY the prompt.</div>
+                        <div class="code-block">You are a prompt engineering expert.
+Generate a prompt to achieve this use-case :
+We have a python script to read a csv file called 'stats.csv' the code should memory efficient and handle edge cases.
+The prompt should instruct that code quality should be modular senior engineer level.</div>
                     </div>
 
                      <!-- Reflection (Hidden) -->
