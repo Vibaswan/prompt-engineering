@@ -702,7 +702,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             color: #e2e8f0;
             overflow-x: auto;
             overflow-y: auto;
-            max-height: 600px;
+            max-height: 700px;
             white-space: pre-wrap;
             flex-grow: 1;
         }
@@ -997,29 +997,29 @@ Return only the python code without any explanation or comments.</div>
                     <!-- Result (Hidden) -->
                     <div class="grid-item result-box fragment visible">
                         <span class="grid-title">The Code Result</span>
-                        <div class="code-block">import csv
+                        <div class="code-block"><span class="keyword">import</span> csv
 
-with open('stats.csv', 'r') as file:
+<span class="keyword">with</span> open(<span class="string">'stats.csv'</span>, <span class="string">'r'</span>) <span class="keyword">as</span> file:
     csv_reader = csv.DictReader(file)
-    
-    for row in csv_reader:
-        flow_id = row['Flow ID']
-        
-        if flow_id in ['Flow 2', 'Flow 3', 'Flow 4']:
-            tx_frames = row['Tx Frames']
-            rx_frames = row['Rx Frames']
-            
-            if rx_frames == 'N/A' or tx_frames == 'N/A':
-                print(f"{flow_id}: Loss = N/A (missing data)")
-            else:
+
+    <span class="keyword">for</span> row <span class="keyword">in</span> csv_reader:
+        flow_id = row[<span class="string">'Flow ID'</span>]
+
+        <span class="keyword">if</span> flow_id <span class="keyword">in</span> [<span class="string">'Flow 2'</span>, <span class="string">'Flow 3'</span>, <span class="string">'Flow 4'</span>]:
+            tx_frames = row[<span class="string">'Tx Frames'</span>]
+            rx_frames = row[<span class="string">'Rx Frames'</span>]
+
+            <span class="keyword">if</span> rx_frames == <span class="string">'N/A'</span> <span class="keyword">or</span> tx_frames == <span class="string">'N/A'</span>:
+                <span class="keyword">print</span>(f<span class="string">"{flow_id}: Loss = N/A (missing data)"</span>)
+            <span class="keyword">else</span>:
                 tx = float(tx_frames)
                 rx = float(rx_frames)
-                
-                if tx == 0:
-                    print(f"{flow_id}: Loss = N/A (Tx Frames is 0)")
-                else:
+
+                <span class="keyword">if</span> tx == 0:
+                    <span class="keyword">print</span>(f<span class="string">"{flow_id}: Loss = N/A (Tx Frames is 0)"</span>)
+                <span class="keyword">else</span>:
                     loss = (tx - rx) / tx * 100
-                    print(f"{flow_id}: Loss = {loss:.2f}%")</div>
+                    <span class="keyword">print</span>(f<span class="string">"{flow_id}: Loss = {loss:.2f}%"</span>)</div>
                     </div>
                 </div>
 
@@ -1075,44 +1075,44 @@ Return only the python code without any explanation or comments.</div>
                     <!-- Result (Hidden) -->
                     <div class="grid-item result-box fragment visible">
                         <span class="grid-title">The Code Result</span>
-                        <div class="code-block">import csv,os
+                        <div class="code-block"><span class="keyword">import</span> csv,os
 
-def calculate_loss(tx, rx):
-    try:
+<span class="keyword">def</span> calculate_loss(tx, rx):
+    <span class="keyword">try</span>:
         tx_val = float(tx)
         rx_val = float(rx)
-        if tx_val == 0:
-            return None
+        <span class="keyword">if</span> tx_val == 0:
+            <span class="keyword">return</span> None
         loss = (tx_val - rx_val) / tx_val * 100
-        return loss
-    except (ValueError, TypeError):
-        return None
-        
-def main():
-    filename = 'stats.csv'
-    if not os.path.exists(filename):
-        print(f"Error: File '{filename}' not found.")
-        return
-    try:
-        with open(filename, 'r') as file:
-            csv_reader = csv.DictReader(file)
-            for row in csv_reader:
-                flow_id = row.get('Flow ID', '').strip()
-                if flow_id in ['Flow 2', 'Flow 3', 'Flow 4']:
-                    tx_frames = row.get('Tx Frames', '').strip()
-                    rx_frames = row.get('Rx Frames', '').strip()
-                    if tx_frames.upper() == 'N/A' or rx_frames.upper() == 'N/A':
-                        print(f"{flow_id}: Unable to calculate loss (N/A values)")
-                        continue
-                    loss = calculate_loss(tx_frames, rx_frames)
-                    if loss is not None:
-                        print(f"{flow_id}: Loss = {loss:.2f}%")
-                    else:
-                        print(f"{flow_id}: Unable to calculate loss (invalid data)")
-    except Exception as e:
-        print(f"Error reading file: {e}")
+        <span class="keyword">return</span> loss
+    <span class="keyword">except</span> (ValueError, TypeError):
+        <span class="keyword">return</span> None
 
-if __name__ == "__main__":
+<span class="keyword">def</span> main():
+    filename = <span class="string">'stats.csv'</span>
+    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(filename):
+        <span class="keyword">print</span>(f<span class="string">"Error: File '{filename}' not found."</span>)
+        <span class="keyword">return</span>
+    <span class="keyword">try</span>:
+        <span class="keyword">with</span> open(filename, <span class="string">'r'</span>) <span class="keyword">as</span> file:
+            csv_reader = csv.DictReader(file)
+            <span class="keyword">for</span> row <span class="keyword">in</span> csv_reader:
+                flow_id = row.get(<span class="string">'Flow ID'</span>, <span class="string">''</span>).strip()
+                <span class="keyword">if</span> flow_id <span class="keyword">in</span> [<span class="string">'Flow 2'</span>, <span class="string">'Flow 3'</span>, <span class="string">'Flow 4'</span>]:
+                    tx_frames = row.get(<span class="string">'Tx Frames'</span>, <span class="string">''</span>).strip()
+                    rx_frames = row.get(<span class="string">'Rx Frames'</span>, <span class="string">''</span>).strip()
+                    <span class="keyword">if</span> tx_frames.upper() == <span class="string">'N/A'</span> <span class="keyword">or</span> rx_frames.upper() == <span class="string">'N/A'</span>:
+                        <span class="keyword">print</span>(f<span class="string">"{flow_id}: Unable to calculate loss (N/A values)"</span>)
+                        <span class="keyword">continue</span>
+                    loss = calculate_loss(tx_frames, rx_frames)
+                    <span class="keyword">if</span> loss <span class="keyword">is</span> <span class="keyword">not</span> None:
+                        <span class="keyword">print</span>(f<span class="string">"{flow_id}: Loss = {loss:.2f}%"</span>)
+                    <span class="keyword">else</span>:
+                        <span class="keyword">print</span>(f<span class="string">"{flow_id}: Unable to calculate loss (invalid data)"</span>)
+    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:
+        <span class="keyword">print</span>(f<span class="string">"Error reading file: {e}"</span>)
+
+<span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:
     main()
                         </div>
                     </div>
@@ -1175,158 +1175,158 @@ Return only the python code without any explanation or comments.</div>
                     <!-- Result (Hidden) -->
                     <div class="grid-item result-box fragment visible">
                         <span class="grid-title">The Code Result</span>
-                        <div class="code-block">import argparse
-import csv
-import logging
-import sys
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+                        <div class="code-block"><span class="keyword">import</span> argparse
+<span class="keyword">import</span> csv
+<span class="keyword">import</span> logging
+<span class="keyword">import</span> sys
+<span class="keyword">from</span> pathlib <span class="keyword">import</span> Path
+<span class="keyword">from</span> typing <span class="keyword">import</span> Dict, List, Optional, Tuple
 
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
+    format=<span class="string">'%(asctime)s - %(levelname)s - %(message)s'</span>
 )
 logger = logging.getLogger(__name__)
 
 
-def parse_arguments() -> argparse.Namespace:
+<span class="keyword">def</span> parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description='Calculate packet loss from stats.csv'
+        description=<span class="string">'Calculate packet loss from stats.csv'</span>
     )
     parser.add_argument(
-        '--file',
+        <span class="string">'--file'</span>,
         type=str,
-        default='stats.csv',
-        help='Path to the CSV file (default: stats.csv)'
+        default=<span class="string">'stats.csv'</span>,
+        help=<span class="string">'Path to the CSV file (default: stats.csv)'</span>
     )
     parser.add_argument(
-        '--flows',
+        <span class="string">'--flows'</span>,
         type=str,
-        nargs='+',
-        default=['Flow 2', 'Flow 3', 'Flow 4'],
-        help='Flow IDs to analyze (default: Flow 2, Flow 3, Flow 4)'
+        nargs=<span class="string">'+'</span>,
+        default=[<span class="string">'Flow 2'</span>, <span class="string">'Flow 3'</span>, <span class="string">'Flow 4'</span>],
+        help=<span class="string">'Flow IDs to analyze (default: Flow 2, Flow 3, Flow 4)'</span>
     )
-    return parser.parse_args()
+    <span class="keyword">return</span> parser.parse_args()
 
 
-def validate_file(file_path: str) -> bool:
+<span class="keyword">def</span> validate_file(file_path: str) -> bool:
     path = Path(file_path)
-    if not path.exists():
-        logger.error(f'File not found: {file_path}')
-        return False
-    if not path.is_file():
-        logger.error(f'Path is not a file: {file_path}')
-        return False
-    return True
+    <span class="keyword">if</span> <span class="keyword">not</span> path.exists():
+        logger.error(f<span class="string">'File not found: {file_path}'</span>)
+        <span class="keyword">return</span> False
+    <span class="keyword">if</span> <span class="keyword">not</span> path.is_file():
+        logger.error(f<span class="string">'Path is not a file: {file_path}'</span>)
+        <span class="keyword">return</span> False
+    <span class="keyword">return</span> True
 
 
-def safe_convert_to_number(value: str) -> Optional[float]:
-    if not value or value.strip() == '':
-        return None
-    
-    cleaned_value = value.strip().strip('"').strip("'")
-    
-    if cleaned_value.upper() in ['N/A', 'NA', 'NULL', 'NONE', '-']:
-        return None
-    
-    try:
-        return float(cleaned_value)
-    except (ValueError, AttributeError):
-        return None
+<span class="keyword">def</span> safe_convert_to_number(value: str) -> Optional[float]:
+    <span class="keyword">if</span> <span class="keyword">not</span> value <span class="keyword">or</span> value.strip() == <span class="string">''</span>:
+        <span class="keyword">return</span> None
+
+    cleaned_value = value.strip().strip(<span class="string">'"'</span>).strip(<span class="string">"'"</span>)
+
+    <span class="keyword">if</span> cleaned_value.upper() <span class="keyword">in</span> [<span class="string">'N/A'</span>, <span class="string">'NA'</span>, <span class="string">'NULL'</span>, <span class="string">'NONE'</span>, <span class="string">'-'</span>]:
+        <span class="keyword">return</span> None
+
+    <span class="keyword">try</span>:
+        <span class="keyword">return</span> float(cleaned_value)
+    <span class="keyword">except</span> (ValueError, AttributeError):
+        <span class="keyword">return</span> None
 
 
-def read_csv_data(file_path: str) -> List[Dict[str, str]]:
+<span class="keyword">def</span> read_csv_data(file_path: str) -> List[Dict[str, str]]:
     data = []
-    try:
-        with open(file_path, 'r', encoding='utf-8') as file:
+    <span class="keyword">try</span>:
+        <span class="keyword">with</span> open(file_path, <span class="string">'r'</span>, encoding=<span class="string">'utf-8'</span>) <span class="keyword">as</span> file:
             csv_reader = csv.DictReader(file)
-            for row in csv_reader:
+            <span class="keyword">for</span> row <span class="keyword">in</span> csv_reader:
                 data.append(row)
-        logger.info(f'Successfully read {len(data)} rows from {file_path}')
-        return data
-    except Exception as e:
-        logger.error(f'Error reading CSV file: {e}')
+        logger.info(f<span class="string">'Successfully read {len(data)} rows from {file_path}'</span>)
+        <span class="keyword">return</span> data
+    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:
+        logger.error(f<span class="string">'Error reading CSV file: {e}'</span>)
         sys.exit(1)
 
 
-def calculate_loss(tx: float, rx: float) -> float:
-    if tx == 0:
-        return 0.0
-    return ((tx - rx) / tx) * 100
+<span class="keyword">def</span> calculate_loss(tx: float, rx: float) -> float:
+    <span class="keyword">if</span> tx == 0:
+        <span class="keyword">return</span> 0.0
+    <span class="keyword">return</span> ((tx - rx) / tx) * 100
 
 
-def process_flow_data(
-    data: List[Dict[str, str]], 
+<span class="keyword">def</span> process_flow_data(
+    data: List[Dict[str, str]],
     target_flows: List[str]
 ) -> Dict[str, Tuple[Optional[float], Optional[float], Optional[float]]]:
     results = {}
-    
-    for row in data:
-        flow_id = row.get('Flow ID', '').strip().strip('"').strip("'")
-        
-        if flow_id not in target_flows:
-            continue
-        
-        tx_frames_str = row.get('Tx Frames', '')
-        rx_frames_str = row.get('Rx Frames', '')
-        
+
+    <span class="keyword">for</span> row <span class="keyword">in</span> data:
+        flow_id = row.get(<span class="string">'Flow ID'</span>, <span class="string">''</span>).strip().strip(<span class="string">'"'</span>).strip(<span class="string">"'"</span>)
+
+        <span class="keyword">if</span> flow_id <span class="keyword">not</span> <span class="keyword">in</span> target_flows:
+            <span class="keyword">continue</span>
+
+        tx_frames_str = row.get(<span class="string">'Tx Frames'</span>, <span class="string">''</span>)
+        rx_frames_str = row.get(<span class="string">'Rx Frames'</span>, <span class="string">''</span>)
+
         tx_frames = safe_convert_to_number(tx_frames_str)
         rx_frames = safe_convert_to_number(rx_frames_str)
-        
-        if tx_frames is None:
-            logger.warning(f'{flow_id}: Tx Frames is not a valid number ({tx_frames_str})')
+
+        <span class="keyword">if</span> tx_frames <span class="keyword">is</span> None:
+            logger.warning(f<span class="string">'{flow_id}: Tx Frames is not a valid number ({tx_frames_str})'</span>)
             results[flow_id] = (None, None, None)
-            continue
-        
-        if rx_frames is None:
-            logger.warning(f'{flow_id}: Rx Frames is not a valid number ({rx_frames_str})')
+            <span class="keyword">continue</span>
+
+        <span class="keyword">if</span> rx_frames <span class="keyword">is</span> None:
+            logger.warning(f<span class="string">'{flow_id}: Rx Frames is not a valid number ({rx_frames_str})'</span>)
             results[flow_id] = (tx_frames, None, None)
-            continue
-        
+            <span class="keyword">continue</span>
+
         loss_percentage = calculate_loss(tx_frames, rx_frames)
         results[flow_id] = (tx_frames, rx_frames, loss_percentage)
-    
-    return results
+
+    <span class="keyword">return</span> results
 
 
-def log_results(results: Dict[str, Tuple[Optional[float], Optional[float], Optional[float]]]) -> None:
-    logger.info('=' * 60)
-    logger.info('Packet Loss Results')
-    logger.info('=' * 60)
-    
-    for flow_id, (tx, rx, loss) in results.items():
-        if tx is None:
-            logger.info(f'{flow_id}: Unable to calculate (invalid Tx Frames)')
-        elif rx is None:
-            logger.info(f'{flow_id}: Unable to calculate (invalid Rx Frames)')
-        else:
-            logger.info(f'{flow_id}: Tx={tx:.0f}, Rx={rx:.0f}, Loss={loss:.2f}%')
-    
-    logger.info('=' * 60)
+<span class="keyword">def</span> log_results(results: Dict[str, Tuple[Optional[float], Optional[float], Optional[float]]]) -> None:
+    logger.info(<span class="string">'=' * 60</span>)
+    logger.info(<span class="string">'Packet Loss Results'</span>)
+    logger.info(<span class="string">'=' * 60</span>)
+
+    <span class="keyword">for</span> flow_id, (tx, rx, loss) <span class="keyword">in</span> results.items():
+        <span class="keyword">if</span> tx <span class="keyword">is</span> None:
+            logger.info(f<span class="string">'{flow_id}: Unable to calculate (invalid Tx Frames)'</span>)
+        <span class="keyword">elif</span> rx <span class="keyword">is</span> None:
+            logger.info(f<span class="string">'{flow_id}: Unable to calculate (invalid Rx Frames)'</span>)
+        <span class="keyword">else</span>:
+            logger.info(f<span class="string">'{flow_id}: Tx={tx:.0f}, Rx={rx:.0f}, Loss={loss:.2f}%'</span>)
+
+    logger.info(<span class="string">'=' * 60</span>)
 
 
-def main() -> None:
+<span class="keyword">def</span> main() -> None:
     args = parse_arguments()
-    
-    if not validate_file(args.file):
+
+    <span class="keyword">if</span> <span class="keyword">not</span> validate_file(args.file):
         sys.exit(1)
-    
+
     data = read_csv_data(args.file)
-    
-    if not data:
-        logger.error('No data found in CSV file')
+
+    <span class="keyword">if</span> <span class="keyword">not</span> data:
+        logger.error(<span class="string">'No data found in CSV file'</span>)
         sys.exit(1)
-    
+
     results = process_flow_data(data, args.flows)
-    
-    if not results:
-        logger.warning(f'No matching flows found for: {args.flows}')
+
+    <span class="keyword">if</span> <span class="keyword">not</span> results:
+        logger.warning(f<span class="string">'No matching flows found for: {args.flows}'</span>)
         sys.exit(0)
-    
+
     log_results(results)
 
 
-if __name__ == '__main__':
+<span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:
     main()
 </div>
                     </div>
@@ -1396,159 +1396,159 @@ Return only the python code without any explanation or comments.</div>
                      <!-- Result (Hidden) -->
                     <div class="grid-item result-box fragment visible">
                         <span class="grid-title">The Code Result</span>
-                        <div class="code-block">import argparse
-import csv
-import logging
-from typing import Optional, Iterator, Dict
-from pathlib import Path
+                        <div class="code-block"><span class="keyword">import</span> argparse
+<span class="keyword">import</span> csv
+<span class="keyword">import</span> logging
+<span class="keyword">from</span> typing <span class="keyword">import</span> Optional, Iterator, Dict
+<span class="keyword">from</span> pathlib <span class="keyword">import</span> Path
 
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
+    format=<span class="string">'%(asctime)s - %(levelname)s - %(message)s'</span>
 )
 logger = logging.getLogger(__name__)
 
 
-def parse_arguments() -> argparse.Namespace:
+<span class="keyword">def</span> parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description='Calculate packet loss from stats.csv'
+        description=<span class="string">'Calculate packet loss from stats.csv'</span>
     )
     parser.add_argument(
-        '--file',
+        <span class="string">'--file'</span>,
         type=str,
-        default='stats.csv',
-        help='Path to the CSV file (default: stats.csv)'
+        default=<span class="string">'stats.csv'</span>,
+        help=<span class="string">'Path to the CSV file (default: stats.csv)'</span>
     )
     parser.add_argument(
-        '--flows',
-        nargs='+',
-        default=['Flow 2', 'Flow 3', 'Flow 4'],
-        help='Flow IDs to analyze (default: Flow 2, Flow 3, Flow 4)'
+        <span class="string">'--flows'</span>,
+        nargs=<span class="string">'+'</span>,
+        default=[<span class="string">'Flow 2'</span>, <span class="string">'Flow 3'</span>, <span class="string">'Flow 4'</span>],
+        help=<span class="string">'Flow IDs to analyze (default: Flow 2, Flow 3, Flow 4)'</span>
     )
-    return parser.parse_args()
+    <span class="keyword">return</span> parser.parse_args()
 
 
-def validate_file(file_path: str) -> bool:
+<span class="keyword">def</span> validate_file(file_path: str) -> bool:
     path = Path(file_path)
-    if not path.exists():
-        logger.error(f"File not found: {file_path}")
-        return False
-    if not path.is_file():
-        logger.error(f"Path is not a file: {file_path}")
-        return False
-    return True
+    <span class="keyword">if</span> <span class="keyword">not</span> path.exists():
+        logger.error(f<span class="string">"File not found: {file_path}"</span>)
+        <span class="keyword">return</span> False
+    <span class="keyword">if</span> <span class="keyword">not</span> path.is_file():
+        logger.error(f<span class="string">"Path is not a file: {file_path}"</span>)
+        <span class="keyword">return</span> False
+    <span class="keyword">return</span> True
 
 
-def safe_convert_to_int(value: str) -> Optional[int]:
-    if not value:
-        return None
-    
-    value = value.strip().strip('"').strip("'")
-    
-    if value.upper() in ('N/A', 'NA', 'NULL', 'NONE', '', '-'):
-        return None
-    
-    try:
-        return int(float(value))
-    except (ValueError, TypeError):
-        return None
+<span class="keyword">def</span> safe_convert_to_int(value: str) -> Optional[int]:
+    <span class="keyword">if</span> <span class="keyword">not</span> value:
+        <span class="keyword">return</span> None
+
+    value = value.strip().strip(<span class="string">'"'</span>).strip(<span class="string">"'"</span>)
+
+    <span class="keyword">if</span> value.upper() <span class="keyword">in</span> (<span class="string">'N/A'</span>, <span class="string">'NA'</span>, <span class="string">'NULL'</span>, <span class="string">'NONE'</span>, <span class="string">''</span>, <span class="string">'-'</span>):
+        <span class="keyword">return</span> None
+
+    <span class="keyword">try</span>:
+        <span class="keyword">return</span> int(float(value))
+    <span class="keyword">except</span> (ValueError, TypeError):
+        <span class="keyword">return</span> None
 
 
-def calculate_loss(tx_frames: Optional[int], rx_frames: Optional[int]) -> Optional[float]:
-    if tx_frames is None or rx_frames is None:
-        return None
-    
-    if tx_frames == 0:
-        return None
-    
+<span class="keyword">def</span> calculate_loss(tx_frames: Optional[int], rx_frames: Optional[int]) -> Optional[float]:
+    <span class="keyword">if</span> tx_frames <span class="keyword">is</span> None <span class="keyword">or</span> rx_frames <span class="keyword">is</span> None:
+        <span class="keyword">return</span> None
+
+    <span class="keyword">if</span> tx_frames == 0:
+        <span class="keyword">return</span> None
+
     loss = ((tx_frames - rx_frames) / tx_frames) * 100
-    return loss
+    <span class="keyword">return</span> loss
 
 
-def read_csv_rows(file_path: str) -> Iterator[Dict[str, str]]:
-    try:
-        with open(file_path, 'r', encoding='utf-8', newline='') as csvfile:
+<span class="keyword">def</span> read_csv_rows(file_path: str) -> Iterator[Dict[str, str]]:
+    <span class="keyword">try</span>:
+        <span class="keyword">with</span> open(file_path, <span class="string">'r'</span>, encoding=<span class="string">'utf-8'</span>, newline=<span class="string">''</span>) <span class="keyword">as</span> csvfile:
             reader = csv.DictReader(csvfile)
-            for row in reader:
-                yield row
-    except Exception as e:
-        logger.error(f"Error reading CSV file: {e}")
-        raise
+            <span class="keyword">for</span> row <span class="keyword">in</span> reader:
+                <span class="keyword">yield</span> row
+    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:
+        logger.error(f<span class="string">"Error reading CSV file: {e}"</span>)
+        <span class="keyword">raise</span>
 
 
-def process_flow_data(file_path: str, target_flows: list) -> Dict[str, Optional[float]]:
+<span class="keyword">def</span> process_flow_data(file_path: str, target_flows: list) -> Dict[str, Optional[float]]:
     results: Dict[str, Optional[float]] = {}
     target_flows_set = set(target_flows)
-    
-    try:
-        for row in read_csv_rows(file_path):
-            flow_id = row.get('Flow ID', '').strip().strip('"').strip("'")
-            
-            if flow_id not in target_flows_set:
-                continue
-            
-            tx_frames_str = row.get('Tx Frames', '')
-            rx_frames_str = row.get('Rx Frames', '')
-            
+
+    <span class="keyword">try</span>:
+        <span class="keyword">for</span> row <span class="keyword">in</span> read_csv_rows(file_path):
+            flow_id = row.get(<span class="string">'Flow ID'</span>, <span class="string">''</span>).strip().strip(<span class="string">'"'</span>).strip(<span class="string">"'"</span>)
+
+            <span class="keyword">if</span> flow_id <span class="keyword">not</span> <span class="keyword">in</span> target_flows_set:
+                <span class="keyword">continue</span>
+
+            tx_frames_str = row.get(<span class="string">'Tx Frames'</span>, <span class="string">''</span>)
+            rx_frames_str = row.get(<span class="string">'Rx Frames'</span>, <span class="string">''</span>)
+
             tx_frames = safe_convert_to_int(tx_frames_str)
             rx_frames = safe_convert_to_int(rx_frames_str)
-            
+
             loss = calculate_loss(tx_frames, rx_frames)
-            
+
             results[flow_id] = loss
-            
-            if loss is not None:
+
+            <span class="keyword">if</span> loss <span class="keyword">is</span> <span class="keyword">not</span> None:
                 logger.info(
-                    f"{flow_id}: Tx={tx_frames}, Rx={rx_frames}, Loss={loss:.2f}%"
+                    f<span class="string">"{flow_id}: Tx={tx_frames}, Rx={rx_frames}, Loss={loss:.2f}%"</span>
                 )
-            else:
+            <span class="keyword">else</span>:
                 logger.warning(
-                    f"{flow_id}: Unable to calculate loss (Tx={tx_frames_str}, Rx={rx_frames_str})"
+                    f<span class="string">"{flow_id}: Unable to calculate loss (Tx={tx_frames_str}, Rx={rx_frames_str})"</span>
                 )
-    
-    except Exception as e:
-        logger.error(f"Error processing flow data: {e}")
-        raise
-    
-    return results
+
+    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:
+        logger.error(f<span class="string">"Error processing flow data: {e}"</span>)
+        <span class="keyword">raise</span>
+
+    <span class="keyword">return</span> results
 
 
-def report_results(results: Dict[str, Optional[float]], target_flows: list) -> None:
-    logger.info("=" * 60)
-    logger.info("LOSS CALCULATION RESULTS")
-    logger.info("=" * 60)
-    
-    for flow in target_flows:
-        if flow in results:
+<span class="keyword">def</span> report_results(results: Dict[str, Optional[float]], target_flows: list) -> None:
+    logger.info(<span class="string">"=" * 60</span>)
+    logger.info(<span class="string">"LOSS CALCULATION RESULTS"</span>)
+    logger.info(<span class="string">"=" * 60</span>)
+
+    <span class="keyword">for</span> flow <span class="keyword">in</span> target_flows:
+        <span class="keyword">if</span> flow <span class="keyword">in</span> results:
             loss = results[flow]
-            if loss is not None:
-                logger.info(f"{flow}: {loss:.2f}% loss")
-            else:
-                logger.info(f"{flow}: Unable to calculate loss (invalid data)")
-        else:
-            logger.warning(f"{flow}: Not found in CSV file")
-    
-    logger.info("=" * 60)
+            <span class="keyword">if</span> loss <span class="keyword">is</span> <span class="keyword">not</span> None:
+                logger.info(f<span class="string">"{flow}: {loss:.2f}% loss"</span>)
+            <span class="keyword">else</span>:
+                logger.info(f<span class="string">"{flow}: Unable to calculate loss (invalid data)"</span>)
+        <span class="keyword">else</span>:
+            logger.warning(f<span class="string">"{flow}: Not found in CSV file"</span>)
+
+    logger.info(<span class="string">"=" * 60</span>)
 
 
-def main() -> None:
+<span class="keyword">def</span> main() -> None:
     args = parse_arguments()
-    
-    if not validate_file(args.file):
-        logger.error("File validation failed. Exiting.")
-        return
-    
-    logger.info(f"Processing file: {args.file}")
-    logger.info(f"Target flows: {args.flows}")
-    
-    try:
+
+    <span class="keyword">if</span> <span class="keyword">not</span> validate_file(args.file):
+        logger.error(<span class="string">"File validation failed. Exiting."</span>)
+        <span class="keyword">return</span>
+
+    logger.info(f<span class="string">"Processing file: {args.file}"</span>)
+    logger.info(f<span class="string">"Target flows: {args.flows}"</span>)
+
+    <span class="keyword">try</span>:
         results = process_flow_data(args.file, args.flows)
         report_results(results, args.flows)
-    except Exception as e:
-        logger.error(f"Fatal error during processing: {e}")
+    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:
+        logger.error(f<span class="string">"Fatal error during processing: {e}"</span>)
 
 
-if __name__ == '__main__':
+<span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:
     main()
 </div>
                     </div>
@@ -1769,271 +1769,427 @@ Then return the final python code within ```python ... ``` block. it should appe
                      <!-- Result (Hidden) -->
                     <div class="grid-item result-box fragment visible">
                         <span class="grid-title">The Code Result</span>
-                        <div class="code-block">import pytest
-import csv
-import tempfile
-import os
-from pathlib import Path
-from unittest.mock import patch, MagicMock
-import logging
+                        <div class="code-block"><span class="keyword">import</span> argparse
+<span class="keyword">import</span> csv
+<span class="keyword">import</span> logging
+<span class="keyword">from</span> abc <span class="keyword">import</span> ABC, abstractmethod
+<span class="keyword">from</span> dataclasses <span class="keyword">import</span> dataclass
+<span class="keyword">from</span> typing <span class="keyword">import</span> Optional, Iterator, List, Set
+<span class="keyword">from</span> pathlib <span class="keyword">import</span> Path
+<span class="keyword">import</span> sys
 
-# Import functions from the main script
-from traffic_loss_calculator5 import (
-    validate_file,
-    safe_convert_to_float,
-    calculate_loss,
-    process_csv_row,
-    read_csv_streaming,
-    process_file
+<span class="comment"># Configure logging</span>
+logging.basicConfig(
+    level=logging.INFO,
+    format=<span class="string">'%(asctime)s - %(levelname)s - %(message)s'</span>
 )
+logger = logging.getLogger(__name__)
 
 
-class TestValidateFile:
-    """Test suite for file validation"""
-    
-    def test_validate_file_exists(self):
-        """Test validation with a valid file"""
-        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv') as tmp:
-            tmp.write("test")
-            tmp_path = tmp.name
-        
-        try:
-            assert validate_file(tmp_path) is True
-        finally:
-            os.unlink(tmp_path)
-    
-    def test_validate_file_not_exists(self):
-        """Test validation with non-existent file"""
-        assert validate_file('/nonexistent/path/file.csv') is False
-    
-    def test_validate_empty_file(self):
-        """Test validation with empty file"""
-        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv') as tmp:
-            tmp_path = tmp.name
-        
-        try:
-            assert validate_file(tmp_path) is False
-        finally:
-            os.unlink(tmp_path)
+<span class="comment"># ============================================================================</span>
+<span class="comment"># Phase 1: Data Models (Schema)</span>
+<span class="comment"># ============================================================================</span>
+
+@dataclass(frozen=True)
+<span class="keyword">class</span> TrafficFlowRecord:
+    <span class="string">"""Immutable data class representing a traffic flow record."""</span>
+    flow_id: str
+    tx_frames: float
+    rx_frames: float
+    loss_percentage: float
+
+    <span class="keyword">def</span> __post_init__(self):
+        <span class="string">"""Validate the record after initialization."""</span>
+        self.validate()
+
+    <span class="keyword">def</span> validate(self) -> None:
+        <span class="string">"""
+        Validate the traffic flow record.
+
+        Raises:
+            ValueError: If validation fails
+        """</span>
+        <span class="keyword">if</span> <span class="keyword">not</span> self.flow_id <span class="keyword">or</span> <span class="keyword">not</span> self.flow_id.strip():
+            <span class="keyword">raise</span> ValueError(<span class="string">"flow_id cannot be empty"</span>)
+
+        <span class="keyword">if</span> self.tx_frames < 0:
+            <span class="keyword">raise</span> ValueError(f<span class="string">"tx_frames cannot be negative: {self.tx_frames}"</span>)
+
+        <span class="keyword">if</span> self.rx_frames < 0:
+            <span class="keyword">raise</span> ValueError(f<span class="string">"rx_frames cannot be negative: {self.rx_frames}"</span>)
+
+        <span class="keyword">if</span> self.rx_frames > self.tx_frames:
+            logger.warning(
+                f<span class="string">"{self.flow_id}: Rx frames ({self.rx_frames}) > Tx frames ({self.tx_frames})"</span>
+            )
+
+    <span class="keyword">def</span> __str__(self) -> str:
+        <span class="string">"""Human-readable string representation."""</span>
+        <span class="keyword">return</span> (
+            f<span class="string">"{self.flow_id}: Tx={self.tx_frames:.0f}, Rx={self.rx_frames:.0f}, "</span>
+            f<span class="string">"Loss={self.loss_percentage:.2f}%"</span>
+        )
 
 
-class TestSafeConvertToFloat:
-    """Test suite for safe float conversion"""
-    
-    def test_valid_number(self):
-        """Test converting valid number strings"""
-        assert safe_convert_to_float("123.45") == 123.45
-        assert safe_convert_to_float("100") == 100.0
-        assert safe_convert_to_float("0") == 0.0
-    
-    def test_invalid_values(self):
-        """Test converting invalid values"""
-        assert safe_convert_to_float("N/A") is None
-        assert safe_convert_to_float("") is None
-        assert safe_convert_to_float("NULL") is None
-        assert safe_convert_to_float("invalid") is None
-    
-    def test_whitespace_handling(self):
-        """Test handling of whitespace"""
-        assert safe_convert_to_float("  100.5  ") == 100.5
+<span class="comment"># ============================================================================</span>
+<span class="comment"># Phase 2: Abstract Interfaces</span>
+<span class="comment"># ============================================================================</span>
+
+<span class="keyword">class</span> DataSource(ABC):
+    <span class="string">"""Abstract base class for data sources."""</span>
+
+    @abstractmethod
+    <span class="keyword">def</span> validate(self) -> bool:
+        <span class="string">"""
+        Validate that the data source is accessible and properly formatted.
+
+        Returns:
+            bool: True if valid, False otherwise
+        """</span>
+        <span class="keyword">pass</span>
+
+    @abstractmethod
+    <span class="keyword">def</span> read_records(self, target_flows: Optional[Set[str]] = None) -> Iterator[dict]:
+        <span class="string">"""
+        Read raw records from the data source.
+
+        Args:
+            target_flows: Optional set of flow IDs to filter
+
+        Yields:
+            dict: Raw record data
+        """</span>
+        <span class="keyword">pass</span>
+
+    @abstractmethod
+    <span class="keyword">def</span> get_schema(self) -> Set[str]:
+        <span class="string">"""
+        Get the schema (column names) of the data source.
+
+        Returns:
+            Set[str]: Set of column names
+        """</span>
+        <span class="keyword">pass</span>
 
 
-class TestCalculateLoss:
-    """Test suite for loss calculation"""
-    
-    def test_normal_loss(self):
-        """Test normal packet loss calculation"""
-        assert calculate_loss(100, 90) == 10.0
-        assert calculate_loss(1000, 950) == 5.0
-    
-    def test_zero_tx(self):
-        """Test with zero transmitted packets"""
-        assert calculate_loss(0, 0) == 0.0
-    
-    def test_complete_loss(self):
-        """Test complete packet loss"""
-        assert calculate_loss(100, 0) == 100.0
-    
-    def test_no_loss(self):
-        """Test no packet loss"""
-        assert calculate_loss(100, 100) == 0.0
+<span class="keyword">class</span> LossCalculator:
+    <span class="string">"""Business logic for calculating packet loss."""</span>
+
+    @staticmethod
+    <span class="keyword">def</span> calculate_loss(tx_frames: float, rx_frames: float) -> float:
+        <span class="string">"""
+        Calculate packet loss percentage.
+
+        Args:
+            tx_frames: Number of transmitted frames
+            rx_frames: Number of received frames
+
+        Returns:
+            float: Loss percentage (0-100)
+        """</span>
+        <span class="keyword">if</span> tx_frames == 0:
+            <span class="keyword">return</span> 0.0
+        <span class="keyword">return</span> ((tx_frames - rx_frames) / tx_frames) * 100
+
+    @staticmethod
+    <span class="keyword">def</span> safe_convert_to_float(value: str) -> Optional[float]:
+        <span class="string">"""
+        Safely convert a string value to float.
+
+        Args:
+            value: String value to convert
+
+        Returns:
+            Optional[float]: Converted value or None if conversion fails
+        """</span>
+        <span class="keyword">if</span> <span class="keyword">not</span> value <span class="keyword">or</span> value.strip().upper() <span class="keyword">in</span> (<span class="string">'N/A'</span>, <span class="string">'NA'</span>, <span class="string">''</span>, <span class="string">'NONE'</span>, <span class="string">'NULL'</span>):
+            <span class="keyword">return</span> None
+
+        <span class="keyword">try</span>:
+            cleaned_value = value.strip().replace(<span class="string">','</span>, <span class="string">''</span>)
+            <span class="keyword">return</span> float(cleaned_value)
+        <span class="keyword">except</span> (ValueError, AttributeError):
+            <span class="keyword">return</span> None
 
 
-class TestProcessCSVRow:
-    """Test suite for CSV row processing"""
-    
-    def test_valid_flow_2(self):
-        """Test processing valid FLOW 2 data"""
-        row = {
-            'Flow ID': 'FLOW 2',
-            'Tx Frames': '1000',
-            'Rx Frames': '950'
-        }
-        result = process_csv_row(row)
-        assert result is not None
-        assert result[0] == 'FLOW 2'
-        assert result[1] == 5.0
-    
-    def test_valid_flow_3(self):
-        """Test processing valid FLOW 3 data"""
-        row = {
-            'Flow ID': 'FLOW 3',
-            'Tx Frames': '2000',
-            'Rx Frames': '1800'
-        }
-        result = process_csv_row(row)
-        assert result is not None
-        assert result[0] == 'FLOW 3'
-        assert result[1] == 10.0
-    
-    def test_invalid_flow(self):
-        """Test processing invalid flow ID"""
-        row = {
-            'Flow ID': 'FLOW 1',
-            'Tx Frames': '1000',
-            'Rx Frames': '950'
-        }
-        result = process_csv_row(row)
-        assert result is None
-    
-    def test_missing_rx_frames(self):
-        """Test processing row with missing Rx Frames"""
-        row = {
-            'Flow ID': 'FLOW 2',
-            'Tx Frames': '1000',
-            'Rx Frames': 'N/A'
-        }
-        result = process_csv_row(row)
-        assert result is not None
-        assert result[0] == 'FLOW 2'
-        assert result[1] == 100.0  # Treated as 0, so 100% loss
-    
-    def test_invalid_tx_frames(self):
-        """Test processing row with invalid Tx Frames"""
-        row = {
-            'Flow ID': 'FLOW 2',
-            'Tx Frames': 'invalid',
-            'Rx Frames': '950'
-        }
-        result = process_csv_row(row)
-        assert result is None
+<span class="comment"># ============================================================================</span>
+<span class="comment"># Phase 3: Concrete Implementations</span>
+<span class="comment"># ============================================================================</span>
+
+<span class="keyword">class</span> CSVDataSource(DataSource):
+    <span class="string">"""CSV file data source implementation with streaming support."""</span>
+
+    REQUIRED_COLUMNS = {<span class="string">'Flow ID'</span>, <span class="string">'Tx Frames'</span>, <span class="string">'Rx Frames'</span>}
+
+    <span class="keyword">def</span> __init__(self, file_path: str):
+        <span class="string">"""
+        Initialize CSV data source.
+
+        Args:
+            file_path: Path to the CSV file
+        """</span>
+        self.file_path = Path(file_path)
+        self._schema: Optional[Set[str]] = None
+
+    <span class="keyword">def</span> validate(self) -> bool:
+        <span class="string">"""
+        Validate the CSV file exists and has required columns.
+
+        Returns:
+            bool: True if valid
+
+        Raises:
+            FileNotFoundError: If file doesn't exist
+            ValueError: If file is invalid
+        """</span>
+        <span class="keyword">if</span> <span class="keyword">not</span> self.file_path.exists():
+            <span class="keyword">raise</span> FileNotFoundError(f<span class="string">"File does not exist: {self.file_path}"</span>)
+
+        <span class="keyword">if</span> <span class="keyword">not</span> self.file_path.is_file():
+            <span class="keyword">raise</span> ValueError(f<span class="string">"Path is not a file: {self.file_path}"</span>)
+
+        <span class="comment"># Check schema</span>
+        schema = self.get_schema()
+        <span class="keyword">if</span> <span class="keyword">not</span> self.REQUIRED_COLUMNS.issubset(schema):
+            missing = self.REQUIRED_COLUMNS - schema
+            <span class="keyword">raise</span> ValueError(f<span class="string">"CSV missing required columns: {missing}"</span>)
+
+        <span class="keyword">return</span> True
+
+    <span class="keyword">def</span> get_schema(self) -> Set[str]:
+        <span class="string">"""
+        Get CSV column names.
+
+        Returns:
+            Set[str]: Set of column names
+        """</span>
+        <span class="keyword">if</span> self._schema <span class="keyword">is</span> <span class="keyword">not</span> None:
+            <span class="keyword">return</span> self._schema
+
+        <span class="keyword">try</span>:
+            <span class="keyword">with</span> open(self.file_path, <span class="string">'r'</span>, encoding=<span class="string">'utf-8'</span>) <span class="keyword">as</span> csvfile:
+                reader = csv.DictReader(csvfile)
+                <span class="keyword">if</span> <span class="keyword">not</span> reader.fieldnames:
+                    <span class="keyword">raise</span> ValueError(<span class="string">"CSV file has no headers"</span>)
+                self._schema = set(reader.fieldnames)
+                <span class="keyword">return</span> self._schema
+        <span class="keyword">except</span> PermissionError:
+            <span class="keyword">raise</span> PermissionError(f<span class="string">"Permission denied: {self.file_path}"</span>)
+        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:
+            <span class="keyword">raise</span> RuntimeError(f<span class="string">"Error reading CSV schema: {e}"</span>)
+
+    <span class="keyword">def</span> read_records(self, target_flows: Optional[Set[str]] = None) -> Iterator[dict]:
+        <span class="string">"""
+        Stream records from CSV file.
+
+        Args:
+            target_flows: Optional set of flow IDs to filter
+
+        Yields:
+            dict: Raw record data with keys: flow_id, tx_frames_str, rx_frames_str, row_num
+        """</span>
+        <span class="keyword">try</span>:
+            <span class="keyword">with</span> open(self.file_path, <span class="string">'r'</span>, encoding=<span class="string">'utf-8'</span>) <span class="keyword">as</span> csvfile:
+                reader = csv.DictReader(csvfile)
+
+                <span class="keyword">for</span> row_num, row <span class="keyword">in</span> enumerate(reader, start=2):
+                    <span class="keyword">try</span>:
+                        flow_id = row.get(<span class="string">'Flow ID'</span>, <span class="string">''</span>).strip()
+
+                        <span class="comment"># Filter by target flows if specified</span>
+                        <span class="keyword">if</span> target_flows <span class="keyword">and</span> flow_id <span class="keyword">not</span> <span class="keyword">in</span> target_flows:
+                            <span class="keyword">continue</span>
+
+                        <span class="keyword">yield</span> {
+                            <span class="string">'flow_id'</span>: flow_id,
+                            <span class="string">'tx_frames_str'</span>: row.get(<span class="string">'Tx Frames'</span>, <span class="string">''</span>),
+                            <span class="string">'rx_frames_str'</span>: row.get(<span class="string">'Rx Frames'</span>, <span class="string">''</span>),
+                            <span class="string">'row_num'</span>: row_num
+                        }
+                    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:
+                        logger.warning(f<span class="string">"Row {row_num}: Error reading row - {e}"</span>)
+                        <span class="keyword">continue</span>
+
+        <span class="keyword">except</span> FileNotFoundError:
+            logger.error(f<span class="string">"File not found: {self.file_path}"</span>)
+            <span class="keyword">raise</span>
+        <span class="keyword">except</span> PermissionError:
+            logger.error(f<span class="string">"Permission denied: {self.file_path}"</span>)
+            <span class="keyword">raise</span>
+        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:
+            logger.error(f<span class="string">"Unexpected error reading file: {e}"</span>)
+            <span class="keyword">raise</span>
 
 
-class TestReadCSVStreaming:
-    """Test suite for CSV streaming reader"""
-    
-    def test_valid_csv(self):
-        """Test reading valid CSV file"""
-        csv_content = """Flow ID,Tx Frames,Rx Frames
-FLOW 2,1000,950
-FLOW 3,2000,1900"""
-        
-        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv', newline='') as tmp:
-            tmp.write(csv_content)
-            tmp_path = tmp.name
-        
-        try:
-            rows = list(read_csv_streaming(tmp_path))
-            assert len(rows) == 2
-            assert rows[0]['Flow ID'] == 'FLOW 2'
-            assert rows[1]['Flow ID'] == 'FLOW 3'
-        finally:
-            os.unlink(tmp_path)
-    
-    def test_missing_columns(self):
-        """Test reading CSV with missing required columns"""
-        csv_content = """Flow ID,Tx Frames
-FLOW 2,1000"""
-        
-        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv', newline='') as tmp:
-            tmp.write(csv_content)
-            tmp_path = tmp.name
-        
-        try:
-            rows = list(read_csv_streaming(tmp_path))
-            assert len(rows) == 0
-        finally:
-            os.unlink(tmp_path)
+<span class="keyword">class</span> TrafficLossProcessor:
+    <span class="string">"""Coordinator class that processes traffic loss from a data source."""</span>
+
+    <span class="keyword">def</span> __init__(self, data_source: DataSource, calculator: LossCalculator):
+        <span class="string">"""
+        Initialize the processor.
+
+        Args:
+            data_source: Data source to read from
+            calculator: Calculator for loss computation
+        """</span>
+        self.data_source = data_source
+        self.calculator = calculator
+
+    <span class="keyword">def</span> process_flows(
+        self,
+        target_flows: List[str]
+    ) -> Iterator[TrafficFlowRecord]:
+        <span class="string">"""
+        Process flows and yield traffic flow records.
+
+        Args:
+            target_flows: List of flow IDs to process
+
+        Yields:
+            TrafficFlowRecord: Validated traffic flow records
+        """</span>
+        <span class="comment"># Validate data source</span>
+        self.data_source.validate()
+
+        target_flows_set = set(target_flows) <span class="keyword">if</span> target_flows <span class="keyword">else</span> None
+
+        <span class="comment"># Stream and process records</span>
+        <span class="keyword">for</span> raw_record <span class="keyword">in</span> self.data_source.read_records(target_flows_set):
+            <span class="keyword">try</span>:
+                flow_id = raw_record[<span class="string">'flow_id'</span>]
+                row_num = raw_record[<span class="string">'row_num'</span>]
+
+                <span class="comment"># Convert frames to floats</span>
+                tx_frames = self.calculator.safe_convert_to_float(
+                    raw_record[<span class="string">'tx_frames_str'</span>]
+                )
+                rx_frames = self.calculator.safe_convert_to_float(
+                    raw_record[<span class="string">'rx_frames_str'</span>]
+                )
+
+                <span class="comment"># Validate conversions</span>
+                <span class="keyword">if</span> tx_frames <span class="keyword">is</span> None:
+                    logger.warning(
+                        f<span class="string">"Row {row_num}: Invalid Tx Frames for {flow_id}: "</span>
+                        f<span class="string">"'{raw_record['tx_frames_str']}'"</span>
+                    )
+                    <span class="keyword">continue</span>
+
+                <span class="keyword">if</span> rx_frames <span class="keyword">is</span> None:
+                    logger.warning(
+                        f<span class="string">"Row {row_num}: Invalid Rx Frames for {flow_id}: "</span>
+                        f<span class="string">"'{raw_record['rx_frames_str']}'"</span>
+                    )
+                    <span class="keyword">continue</span>
+
+                <span class="comment"># Calculate loss</span>
+                loss_percentage = self.calculator.calculate_loss(tx_frames, rx_frames)
+
+                <span class="comment"># Create and yield record</span>
+                record = TrafficFlowRecord(
+                    flow_id=flow_id,
+                    tx_frames=tx_frames,
+                    rx_frames=rx_frames,
+                    loss_percentage=loss_percentage
+                )
+
+                <span class="keyword">yield</span> record
+
+            <span class="keyword">except</span> ValueError <span class="keyword">as</span> e:
+                logger.warning(
+                    f<span class="string">"Row {raw_record.get('row_num', '?')}: Validation error - {e}"</span>
+                )
+                <span class="keyword">continue</span>
+            <span class="keyword">except</span> Exception <span class="keyword">as</span> e:
+                logger.warning(
+                    f<span class="string">"Row {raw_record.get('row_num', '?')}: Error processing record - {e}"</span>
+                )
+                <span class="keyword">continue</span>
+
+    <span class="keyword">def</span> analyze_and_report(self, target_flows: List[str]) -> None:
+        <span class="string">"""
+        Analyze flows and report results.
+
+        Args:
+            target_flows: List of flow IDs to analyze
+        """</span>
+        logger.info(f<span class="string">"Processing file: {getattr(self.data_source, 'file_path', 'unknown')}"</span>)
+        logger.info(f<span class="string">"Target flows: {', '.join(target_flows)}"</span>)
+        logger.info(<span class="string">"-" * 80</span>)
+
+        results_found = False
+
+        <span class="keyword">try</span>:
+            <span class="keyword">for</span> record <span class="keyword">in</span> self.process_flows(target_flows):
+                results_found = True
+                logger.info(str(record))
+
+            <span class="keyword">if</span> <span class="keyword">not</span> results_found:
+                logger.warning(<span class="string">"No matching flows found in the data source"</span>)
+
+        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:
+            logger.error(f<span class="string">"Error during analysis: {e}"</span>)
+            sys.exit(1)
+
+        logger.info(<span class="string">"-" * 80</span>)
+        logger.info(<span class="string">"Processing complete"</span>)
 
 
-class TestProcessFileIntegration:
-    """Integration tests for complete file processing"""
-    
-    def test_process_complete_csv(self, caplog):
-        """Test processing a complete valid CSV file"""
-        csv_content = """Flow ID,Tx Frames,Rx Frames
-FLOW 1,1000,950
-FLOW 2,2000,1800
-FLOW 3,1500,1500
-FLOW 4,3000,2700"""
-        
-        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv', newline='') as tmp:
-            tmp.write(csv_content)
-            tmp_path = tmp.name
-        
-        try:
-            with caplog.at_level(logging.INFO):
-                process_file(tmp_path)
-            
-            # Check that all relevant flows were processed
-            log_text = caplog.text
-            assert "FLOW 2: Loss = 10.00%" in log_text
-            assert "FLOW 3: Loss = 0.00%" in log_text
-            assert "FLOW 4: Loss = 10.00%" in log_text
-        finally:
-            os.unlink(tmp_path)
-    
-    def test_process_csv_with_missing_data(self, caplog):
-        """Test processing CSV with some missing data"""
-        csv_content = """Flow ID,Tx Frames,Rx Frames
-FLOW 2,1000,N/A
-FLOW 3,2000,1800
-FLOW 4,invalid,500"""
-        
-        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv', newline='') as tmp:
-            tmp.write(csv_content)
-            tmp_path = tmp.name
-        
-        try:
-            with caplog.at_level(logging.INFO):
-                process_file(tmp_path)
-            
-            log_text = caplog.text
-            assert "FLOW 2: Loss = 100.00%" in log_text
-            assert "FLOW 3: Loss = 10.00%" in log_text
-            assert "FLOW 4: No data found" in log_text
-        finally:
-            os.unlink(tmp_path)
-    
-    def test_process_csv_with_no_relevant_flows(self, caplog):
-        """Test processing CSV with no relevant flows"""
-        csv_content = """Flow ID,Tx Frames,Rx Frames
-FLOW 1,1000,950
-FLOW 5,2000,1800"""
-        
-        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv', newline='') as tmp:
-            tmp.write(csv_content)
-            tmp_path = tmp.name
-        
-        try:
-            with caplog.at_level(logging.INFO):
-                process_file(tmp_path)
-            
-            log_text = caplog.text
-            assert "Relevant flows found: 0" in log_text
-        finally:
-            os.unlink(tmp_path)
-    
-    def test_process_nonexistent_file(self, caplog):
-        """Test processing non-existent file"""
-        with caplog.at_level(logging.ERROR):
-            process_file('/nonexistent/file.csv')
-        
-        assert "File not found" in caplog.text
+<span class="comment"># ============================================================================</span>
+<span class="comment"># Phase 4: CLI Interface</span>
+<span class="comment"># ============================================================================</span>
+
+<span class="keyword">class</span> CommandLineInterface:
+    <span class="string">"""Command-line interface for the traffic loss analyzer."""</span>
+
+    @staticmethod
+    <span class="keyword">def</span> parse_arguments() -> argparse.Namespace:
+        <span class="string">"""
+        Parse command-line arguments.
+
+        Returns:
+            argparse.Namespace: Parsed arguments
+        """</span>
+        parser = argparse.ArgumentParser(
+            description=<span class="string">'Calculate packet loss from CSV file'</span>
+        )
+        parser.add_argument(
+            <span class="string">'--file'</span>,
+            type=str,
+            default=<span class="string">'stats.csv'</span>,
+            help=<span class="string">'Path to the CSV file (default: stats.csv)'</span>
+        )
+        parser.add_argument(
+            <span class="string">'--flows'</span>,
+            type=str,
+            nargs=<span class="string">'+'</span>,
+            default=[<span class="string">'Flow 2'</span>, <span class="string">'Flow 3'</span>, <span class="string">'Flow 4'</span>],
+            help=<span class="string">'Flow IDs to analyze (default: Flow 2, Flow 3, Flow 4)'</span>
+        )
+        <span class="keyword">return</span> parser.parse_args()
+
+    @staticmethod
+    <span class="keyword">def</span> run() -> None:
+        <span class="string">"""Run the CLI application."""</span>
+        args = CommandLineInterface.parse_arguments()
+
+        <span class="comment"># Create components</span>
+        data_source = CSVDataSource(args.file)
+        calculator = LossCalculator()
+        processor = TrafficLossProcessor(data_source, calculator)
+
+        <span class="comment"># Analyze flows</span>
+        processor.analyze_and_report(args.flows)
 
 
-if __name__ == '__main__':
-    pytest.main([__file__, '-v'])
+<span class="keyword">def</span> main() -> None:
+    <span class="string">"""Main entry point."""</span>
+    CommandLineInterface.run()
+
+
+<span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:
+    main()
+
 </div>
                     </div>
                 </div>
@@ -2049,20 +2205,32 @@ if __name__ == '__main__':
                     <!-- Prompt -->
                     <div class="grid-item prompt-box">
                         <span class="grid-title">The Prompt</span>
-                        <div class="code-block">We have created a python script to read a csv file called 'stats.csv'
-The code is saved with filename 'traffic_loss_calculator5.py'.
-and we can execute it as: python traffic_loss_calculator5.py --file stats.csv 
-Here is the code:
+                        <div class="code-block">We have a working procedural python script 'traffic_loss_calculator5.py' that calculates packet loss from a CSV file.
+I want to refactor this into an object-oriented design with proper separation of concerns.
+
+Here is the current code:
 {code_content}
 
-I want to generate unit tests for this code using simple python functions and pytest framework.
-Lets let break down the task which needs to be done.
-1. Analyze the code and identify key areas we can test
-2  Create test cases where you will creating mock data to simulate different scenarios and call the python code.
-4. please ensure if you are creating mock data files, you clean them up after the test is done.
-3. Finally combine all the test -cases maybe 3or 4 in number in a single python file.
+Refactor this code using decomposition approach with these specific phases:
 
-Return only the python code within ```python ... ``` block.</div>
+Phase 1 - Define Data Models (Schema):
+1. Define a `TrafficFlowRecord` dataclass to represent a single flow record with fields: flow_id, tx_frames, rx_frames, loss_percentage
+2. Add validation methods in the dataclass
+
+Phase 2 - Define Abstract Interfaces:
+3. Define a `DataSource` Abstract Base Class with methods: validate(), read_records(), get_schema()
+4. Define a `LossCalculator` class to handle the business logic of calculating packet loss
+
+Phase 3 - Implement Concrete Classes:
+5. Implement `CSVDataSource` inheriting from `DataSource` with streaming capability for large files
+6. Implement the `TrafficLossProcessor` class that coordinates data source and calculator
+
+Phase 4 - Maintain CLI Interface:
+7. Keep the command-line interface working with argparse
+8. Ensure logging is properly integrated throughout
+
+For each phase, briefly explain your design decisions (1-2 sentences).
+Then return the final refactored python code within ```python ... ``` block.</div>
                     </div>
 
                      <!-- Reflection (Hidden) -->
