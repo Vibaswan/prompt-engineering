@@ -566,7 +566,22 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             --warning: #fbbf24;        /* Amber */
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Prevent horizontal overflow */
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* Ensure all containers respect viewport width */
+        div, section, article {
+            max-width: 100%;
+        }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -575,6 +590,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             overflow: hidden;
             height: 100vh;
             width: 100vw;
+            max-width: 100%;
         }
 
         /* Slide Container */
@@ -582,6 +598,8 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             position: relative;
             width: 100%;
             height: 100%;
+            max-width: 100vw;
+            overflow: hidden;
         }
 
         .slide {
@@ -598,6 +616,9 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             justify-content: center;
             align-items: center;
             padding: 2rem 4rem;
+            overflow-x: hidden;
+            overflow-y: auto;
+            max-width: 100%;
         }
 
         .slide.active {
@@ -621,10 +642,10 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         }
 
         /* Typography */
-        h1 { font-size: 4rem; font-weight: 800; letter-spacing: -2px; background: linear-gradient(135deg, var(--accent), var(--accent-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem; text-align: center; }
-        h2 { font-size: 2.2rem; margin-bottom: 1.5rem; color: var(--accent); width: 100%; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; }
-        h3 { font-size: 1.5rem; color: var(--accent-secondary); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 2px; }
-        p, li { font-size: 1rem; line-height: 1.5; color: #cbd5e1; }
+        h1 { font-size: 4rem; font-weight: 800; letter-spacing: -2px; background: linear-gradient(135deg, var(--accent), var(--accent-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem; text-align: center; word-wrap: break-word; }
+        h2 { font-size: 2.2rem; margin-bottom: 1.5rem; color: var(--accent); width: 100%; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; word-wrap: break-word; }
+        h3 { font-size: 1.5rem; color: var(--accent-secondary); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 2px; word-wrap: break-word; }
+        p, li { font-size: 1rem; line-height: 1.5; color: #cbd5e1; word-wrap: break-word; overflow-wrap: break-word; }
         
         /* Layouts */
         .intro-slide {
@@ -638,9 +659,10 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             grid-template-areas: "left right";
             gap: 2rem;
             width: 100%;
-            height: 80vh;
+            height: calc(100vh - 180px); /* Full height minus padding/controls */
             max-width: 1600px;
             align-items: stretch;
+            overflow: hidden;
         }
 
         .left-stack {
@@ -649,7 +671,21 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             flex-direction: column;
             gap: 1.5rem;
             height: 100%;
-            overflow-y: auto; /* Allow scroll if content is too long on small screens */
+            overflow-y: auto; /* Allow scroll for stacked items */
+            overflow-x: hidden;
+            min-width: 0; /* Prevent grid blowout */
+            padding-right: 5px; /* Space for scrollbar */
+        }
+
+        /* Left stack items should not expand to fill height */
+        .left-stack .grid-item {
+            flex: 0 0 auto; /* Don't grow or shrink, use content size */
+            max-height: 45vh; /* Limit individual item height for better scrolling */
+        }
+
+        /* Right stack should fill remaining space */
+        .right-stack .grid-item {
+            overflow-y: auto; /* Enable scrolling for code result */
         }
 
         .right-stack {
@@ -657,6 +693,8 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             display: flex;
             flex-direction: column;
             height: 100%;
+            overflow-x: hidden;
+            min-width: 0; /* Prevent grid blowout */
         }
 
         .grid-item {
@@ -666,11 +704,16 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             border: 1px solid rgba(255,255,255,0.05);
             display: flex;
             flex-direction: column;
+            overflow-y: auto; /* Allow scrolling within grid items */
+            overflow-x: hidden;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-height: 100%; /* Prevent overflow from parent */
         }
 
         .right-stack .grid-item {
-            flex-grow: 1; /* Fill the entire right column height */
-            height: 100%;
+            flex-grow: 1; /* Fill available space */
+            max-height: 100%; /* Constrain to parent height */
         }
 
         .grid-title {
@@ -681,6 +724,48 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             color: #64748b;
             margin-bottom: 0.5rem;
             display: block;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        /* Ensure all text content can break properly */
+        .grid-item p, .grid-item li, .grid-item div {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            max-width: 100%;
+        }
+
+        /* Custom Scrollbar Styling */
+        .left-stack::-webkit-scrollbar,
+        .right-stack::-webkit-scrollbar,
+        .grid-item::-webkit-scrollbar,
+        .code-block::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .left-stack::-webkit-scrollbar-track,
+        .right-stack::-webkit-scrollbar-track,
+        .grid-item::-webkit-scrollbar-track,
+        .code-block::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        .left-stack::-webkit-scrollbar-thumb,
+        .right-stack::-webkit-scrollbar-thumb,
+        .grid-item::-webkit-scrollbar-thumb,
+        .code-block::-webkit-scrollbar-thumb {
+            background: rgba(56, 189, 248, 0.3);
+            border-radius: 4px;
+        }
+
+        .left-stack::-webkit-scrollbar-thumb:hover,
+        .right-stack::-webkit-scrollbar-thumb:hover,
+        .grid-item::-webkit-scrollbar-thumb:hover,
+        .code-block::-webkit-scrollbar-thumb:hover {
+            background: rgba(56, 189, 248, 0.5);
         }
 
         /* Content Specifics */
@@ -702,9 +787,13 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             color: #e2e8f0;
             overflow-x: auto;
             overflow-y: auto;
-            max-height: 700px;
+            max-height: 100%; /* Fill parent container but allow scrolling */
+            min-height: 200px; /* Minimum readable height */
             white-space: pre-wrap;
-            flex-grow: 1;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            flex: 1 1 auto; /* Allow flexible sizing */
+            max-width: 100%;
         }
         
         .keyword { color: #c084fc; }
@@ -803,7 +892,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         }
 
         .tip-card.open .tip-body {
-            max-height: 300px; /* Generous height for expansion */
+            max-height: 500px; /* Large enough for content expansion */
             opacity: 1;
             padding: 0 0.9rem 0.9rem 0.9rem;
             border-top: 1px solid rgba(255,255,255,0.05);
@@ -876,6 +965,216 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             vertical-align: middle;
         }
         @keyframes blink { 50% { opacity: 0; } }
+
+        /* Responsive Design - Tablets and Medium Screens */
+        @media screen and (max-width: 1400px) {
+            h1 { font-size: 3rem; }
+            h2 { font-size: 1.8rem; }
+            h3 { font-size: 1.3rem; }
+            p, li { font-size: 0.95rem; }
+
+            .slide {
+                padding: 1.5rem 2rem;
+                overflow-y: auto;
+                justify-content: flex-start;
+            }
+
+            .split-grid {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "left"
+                    "right";
+                gap: 1.5rem;
+                height: auto;
+                max-width: 100%;
+            }
+
+            .left-stack, .right-stack {
+                height: auto;
+                max-height: none;
+                width: 100%;
+            }
+
+            .grid-item {
+                padding: 1.2rem;
+                max-width: 100%;
+                max-height: 60vh; /* Allow more height on tablet */
+            }
+
+            .left-stack .grid-item {
+                max-height: 50vh;
+            }
+
+            .code-block {
+                max-height: 100%; /* Fill parent container */
+                font-size: 0.8rem;
+            }
+
+            .controls {
+                bottom: 1rem;
+                right: 1rem;
+            }
+
+            button {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .terminal-window {
+                width: 90%;
+                padding: 1.5rem;
+            }
+        }
+
+        /* Responsive Design - Mobile */
+        @media screen and (max-width: 768px) {
+            h1 { font-size: 2.2rem; letter-spacing: -1px; }
+            h2 { font-size: 1.4rem; }
+            h3 { font-size: 1.1rem; letter-spacing: 1px; }
+            p, li { font-size: 0.9rem; line-height: 1.6; }
+
+            .slide {
+                padding: 1rem 1.5rem;
+                justify-content: flex-start;
+                overflow-y: auto;
+            }
+
+            .split-grid {
+                gap: 1rem;
+                max-width: 100%;
+            }
+
+            .grid-item {
+                padding: 1rem;
+                max-height: 50vh; /* Limit height on mobile */
+            }
+
+            .left-stack .grid-item {
+                max-height: 40vh;
+            }
+
+            .code-block {
+                font-size: 0.75rem;
+                padding: 0.8rem;
+                max-height: 100%; /* Fill parent container */
+            }
+
+            .tips-grid {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+                max-height: 70vh;
+            }
+
+            .tip-header {
+                padding: 0.7rem;
+                gap: 0.6rem;
+            }
+
+            .tip-card.open .tip-body {
+                padding: 0 0.7rem 0.7rem 0.7rem;
+            }
+
+            .controls {
+                bottom: 0.5rem;
+                right: 0.5rem;
+                gap: 0.5rem;
+            }
+
+            button {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            .terminal-window {
+                width: 95%;
+                padding: 1rem;
+                font-size: 0.85rem;
+            }
+
+            .tag {
+                font-size: 0.7rem;
+                padding: 0.2rem 0.6rem;
+                margin-right: 0.5rem;
+            }
+
+            .grid-title {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Responsive Design - Small Mobile */
+        @media screen and (max-width: 480px) {
+            h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.2rem; margin-bottom: 1rem; }
+            h3 { font-size: 1rem; }
+            p, li { font-size: 0.85rem; }
+
+            .slide {
+                padding: 0.8rem 1rem;
+            }
+
+            .grid-item {
+                max-height: 45vh;
+            }
+
+            .left-stack .grid-item {
+                max-height: 35vh;
+            }
+
+            .code-block {
+                font-size: 0.7rem;
+                padding: 0.6rem;
+                max-height: 100%; /* Fill parent container */
+            }
+
+            .controls {
+                bottom: 0.3rem;
+                right: 0.3rem;
+                left: 0.3rem;
+                justify-content: space-between;
+            }
+
+            button {
+                padding: 0.4rem 0.7rem;
+                font-size: 0.8rem;
+                flex: 1;
+            }
+
+            .tip-number {
+                width: 20px;
+                height: 20px;
+                font-size: 0.8rem;
+            }
+
+            .terminal-window {
+                padding: 0.8rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Landscape Mode for Mobile Devices */
+        @media screen and (max-height: 600px) and (orientation: landscape) {
+            .slide {
+                padding: 0.5rem 1rem;
+                overflow-y: auto;
+            }
+
+            h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+            h2 { font-size: 1.3rem; margin-bottom: 0.8rem; }
+
+            .code-block {
+                max-height: 30vh; /* Dynamic: 30% of viewport height for landscape */
+            }
+
+            .split-grid {
+                height: auto;
+            }
+
+            .controls {
+                bottom: 0.3rem;
+                right: 0.3rem;
+            }
+        }
 
     </style>
 </head>
