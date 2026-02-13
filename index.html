@@ -2965,7 +2965,164 @@ The prompt should instruct that code quality should be modular senior engineer l
             </div>
         </div>
 
-        <!-- Slide 13: The Final Prompt (Thank You) -->
+        <!-- Slide 13: Token Optimization -->
+        <div class="slide">
+            <h2 style="margin-bottom: 1rem;">Token Optimization Techniques</h2>
+            <p style="margin-bottom: 1.5rem; color: #94a3b8; font-size: 0.9rem;">Click on a card to reveal the example.</p>
+            <div class="tips-grid">
+                <!-- Tip 1 -->
+                <div class="tip-card" onclick="toggleTip(this)">
+                    <div class="tip-header">
+                        <div class="tip-number">1</div>
+                        <div>
+                            <strong style="color:var(--accent)">Use Abbreviations Wisely</strong>
+                            <p style="font-size: 0.9rem; margin-top:0.3rem">Use concise language without sacrificing clarity.</p>
+                        </div>
+                        <div class="chevron">▼</div>
+                    </div>
+                    <div class="tip-body">
+                        <span class="example-label">Example</span>
+                        <span class="example-text">Instead of "Create a function that will process the data", use: "Create fn to process data"</span>
+                    </div>
+                </div>
+
+                <!-- Tip 2 -->
+                <div class="tip-card" onclick="toggleTip(this)">
+                    <div class="tip-header">
+                        <div class="tip-number">2</div>
+                        <div>
+                            <strong style="color:var(--accent)">Reference Instead of Repeat</strong>
+                            <p style="font-size: 0.9rem; margin-top:0.3rem">Don't paste the same code multiple times.</p>
+                        </div>
+                        <div class="chevron">▼</div>
+                    </div>
+                    <div class="tip-body">
+                        <span class="example-label">Example</span>
+                        <span class="example-text">"Apply the same pattern used in UserService to OrderService" vs. pasting full UserService code again.</span>
+                    </div>
+                </div>
+
+                <!-- Tip 3 -->
+                <div class="tip-card" onclick="toggleTip(this)">
+                    <div class="tip-header">
+                        <div class="tip-number">3</div>
+                        <div>
+                            <strong style="color:var(--accent-secondary)">Remove Unnecessary Context</strong>
+                            <p style="font-size: 0.9rem; margin-top:0.3rem">Only include relevant code sections.</p>
+                        </div>
+                        <div class="chevron">▼</div>
+                    </div>
+                    <div class="tip-body">
+                        <span class="example-label">Example</span>
+                        <span class="example-text">Use "... (other imports)" instead of listing 50 import statements when the issue is in one function.</span>
+                    </div>
+                </div>
+
+                <!-- Tip 4 -->
+                <div class="tip-card" onclick="toggleTip(this)">
+                    <div class="tip-header">
+                        <div class="tip-number">4</div>
+                        <div>
+                            <strong style="color:var(--accent-secondary)">Use Bullet Points</strong>
+                            <p style="font-size: 0.9rem; margin-top:0.3rem">Lists consume fewer tokens than paragraphs.</p>
+                        </div>
+                        <div class="chevron">▼</div>
+                    </div>
+                    <div class="tip-body">
+                        <span class="example-label">Example</span>
+                        <span class="example-text">Requirements:<br>- Handle auth<br>- Validate input<br>- Return JSON<br>vs. long descriptive paragraph.</span>
+                    </div>
+                </div>
+
+                <!-- Tip 5 -->
+                <div class="tip-card" onclick="toggleTip(this)">
+                    <div class="tip-header">
+                        <div class="tip-number">5</div>
+                        <div>
+                            <strong style="color:var(--success)">Chunk Large Tasks</strong>
+                            <p style="font-size: 0.9rem; margin-top:0.3rem">Break down into smaller, focused prompts.</p>
+                        </div>
+                        <div class="chevron">▼</div>
+                    </div>
+                    <div class="tip-body">
+                        <span class="example-label">Example</span>
+                        <span class="example-text">"First design the schema", then "Now write the API", instead of asking for entire full-stack app at once.</span>
+                    </div>
+                </div>
+
+                <!-- Tip 6 -->
+                <div class="tip-card" onclick="toggleTip(this)">
+                    <div class="tip-header">
+                        <div class="tip-number">6</div>
+                        <div>
+                            <strong style="color:var(--success)">Use Placeholders</strong>
+                            <p style="font-size: 0.9rem; margin-top:0.3rem">Replace repetitive data with simplified examples.</p>
+                        </div>
+                        <div class="chevron">▼</div>
+                    </div>
+                    <div class="tip-body">
+                        <span class="example-label">Example</span>
+                        <span class="example-text">Show 2-3 sample records instead of pasting 1000 rows: [{id:1,name:"John"}, ... (998 more)]</span>
+                    </div>
+                </div>
+
+                <!-- Tip 7 -->
+                <div class="tip-card" style="border-color: rgba(251, 191, 36, 0.3);" onclick="toggleTip(this)">
+                    <div class="tip-header">
+                        <div class="tip-number" style="background: var(--warning);">7</div>
+                        <div>
+                            <strong style="color:var(--warning)">Specify Output Format Early</strong>
+                            <p style="font-size: 0.9rem; margin-top:0.3rem">Tell the AI exactly what you want upfront.</p>
+                        </div>
+                         <div class="chevron">▼</div>
+                    </div>
+                     <div class="tip-body">
+                        <span class="example-label">Example</span>
+                        <span class="example-text">"Return only code, no explanations" saves tokens vs. filtering out verbose responses later.</span>
+                    </div>
+                </div>
+
+                <!-- Tip 8 -->
+                <div class="tip-card" style="border-color: rgba(248, 113, 113, 0.3);" onclick="toggleTip(this)">
+                    <div class="tip-header">
+                        <div class="tip-number" style="background: var(--danger);">8</div>
+                        <div>
+                            <strong style="color:var(--danger)">Leverage System Instructions</strong>
+                            <p style="font-size: 0.9rem; margin-top:0.3rem">Set persistent context once instead of repeating.</p>
+                        </div>
+                         <div class="chevron">▼</div>
+                    </div>
+                     <div class="tip-body">
+                        <span class="example-label">Example</span>
+                        <span class="example-text">Set system role: "You're a Python expert. Be concise." Then all prompts inherit this without repeating.</span>
+                    </div>
+                </div>
+
+                <!-- Tip 9 -->
+                <div class="tip-card" style="border-color: rgba(139, 92, 246, 0.3);" onclick="toggleTip(this)">
+                    <div class="tip-header">
+                        <div class="tip-number" style="background: #8b5cf6;">9</div>
+                        <div>
+                            <strong style="color:#a78bfa">Token-Oriented Object Notation (TOON)</strong>
+                            <p style="font-size: 0.9rem; margin-top:0.3rem">A minimalist format designed to reduce token usage by eliminating redundant syntax.</p>
+                        </div>
+                         <div class="chevron">▼</div>
+                    </div>
+                     <div class="tip-body">
+                        <span class="example-label">Example</span>
+                        <span class="example-text">
+                            <strong>TOON format:</strong><br>
+                            `user:john age:25 active:true roles:[admin,editor]`<br><br>
+                            <strong>JSON equivalent:</strong><br>
+                            `{"user": "john", "age": 25, "active": true, "roles": ["admin", "editor"]}`<br><br>
+                            <strong>Benefits:</strong> Eliminates quotes around keys, reduces commas/braces, uses colon separators, and treats values as typed (strings, numbers, booleans, arrays). Saves ~30-40% tokens especially with nested structures. Perfect for passing config data or structured info in prompts.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: The Final Prompt (Thank You) -->
         <div class="slide intro-slide active">
             <h1 style="font-size: 3rem; margin-bottom: 2rem;">The Final Prompt</h1>
             <div class="terminal-window">
