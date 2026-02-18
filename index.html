@@ -626,12 +626,14 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             transition: opacity 0.5s ease;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             padding: 2rem 4rem;
+            padding-bottom: 6rem; /* Extra space for controls */
             overflow-x: hidden;
             overflow-y: auto;
             max-width: 100%;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
         }
 
         .slide.active {
@@ -663,6 +665,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         /* Layouts */
         .intro-slide {
             text-align: center;
+            justify-content: center !important; /* Override flex-start for intro slides */
         }
         
         /* New Split Grid Layout */
@@ -772,34 +775,42 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         }
 
         /* Custom Scrollbar Styling */
+        .slide::-webkit-scrollbar,
         .left-stack::-webkit-scrollbar,
         .right-stack::-webkit-scrollbar,
         .grid-item::-webkit-scrollbar,
-        .code-block::-webkit-scrollbar {
+        .code-block::-webkit-scrollbar,
+        .tips-grid::-webkit-scrollbar {
             width: 8px;
             height: 8px;
         }
 
+        .slide::-webkit-scrollbar-track,
         .left-stack::-webkit-scrollbar-track,
         .right-stack::-webkit-scrollbar-track,
         .grid-item::-webkit-scrollbar-track,
-        .code-block::-webkit-scrollbar-track {
+        .code-block::-webkit-scrollbar-track,
+        .tips-grid::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 4px;
         }
 
+        .slide::-webkit-scrollbar-thumb,
         .left-stack::-webkit-scrollbar-thumb,
         .right-stack::-webkit-scrollbar-thumb,
         .grid-item::-webkit-scrollbar-thumb,
-        .code-block::-webkit-scrollbar-thumb {
+        .code-block::-webkit-scrollbar-thumb,
+        .tips-grid::-webkit-scrollbar-thumb {
             background: rgba(56, 189, 248, 0.3);
             border-radius: 4px;
         }
 
+        .slide::-webkit-scrollbar-thumb:hover,
         .left-stack::-webkit-scrollbar-thumb:hover,
         .right-stack::-webkit-scrollbar-thumb:hover,
         .grid-item::-webkit-scrollbar-thumb:hover,
-        .code-block::-webkit-scrollbar-thumb:hover {
+        .code-block::-webkit-scrollbar-thumb:hover,
+        .tips-grid::-webkit-scrollbar-thumb:hover {
             background: rgba(56, 189, 248, 0.5);
         }
 
@@ -889,9 +900,9 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             width: 100%;
             max-width: 1400px;
             margin-top: 1rem;
-            max-height: 80vh;
-            overflow-y: auto;
-            padding-right: 10px; /* Space for scrollbar */
+            margin-bottom: 2rem;
+            /* Remove max-height to allow natural expansion */
+            padding-right: 5px;
         }
         
         /* Interactive Tip Card */
@@ -1013,6 +1024,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 
             .slide {
                 padding: 1.5rem 2rem;
+                padding-bottom: 5.5rem; /* Extra space for controls */
                 overflow-y: auto;
                 justify-content: flex-start;
             }
@@ -1096,6 +1108,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 
             .slide {
                 padding: 1rem 1.5rem;
+                padding-bottom: 5rem; /* Extra space for controls */
                 justify-content: flex-start;
                 overflow-y: auto;
             }
@@ -1136,7 +1149,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             .tips-grid {
                 grid-template-columns: 1fr;
                 gap: 0.8rem;
-                max-height: 70vh;
+                /* Remove max-height to allow natural expansion and slide scrolling */
             }
 
             .tip-header {
@@ -1188,6 +1201,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 
             .slide {
                 padding: 0.8rem 1rem;
+                padding-bottom: 4.5rem; /* Extra space for controls */
             }
 
             /* Maintain proper order */
@@ -2800,7 +2814,7 @@ The prompt should instruct that code quality should be modular senior engineer l
         </div>
 
         <!-- Slide 11: Recap -->
-        <div class="slide">
+        <div class="slide intro-slide">
             <h2>The Cheat Sheet</h2>
             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; width: 100%; max-width: 1400px; margin-top: 2rem;">
                 <div class="grid-item" style="border-left: 4px solid var(--accent);">
